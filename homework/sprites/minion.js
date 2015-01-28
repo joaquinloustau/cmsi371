@@ -90,7 +90,34 @@ var drawOverall = function (ctx) {
     ctx.stroke();  
 }
 
+drawArms = function (ctx) {
+    ctx.beginPath();
+    ctx.fillStyle = "#fcda6d";
+    //Right arm
+    ctx.moveTo(235,255);
+    ctx.lineTo(245,255);
+    ctx.lineTo(245,235);
+    ctx.lineTo(238,235);
+    ctx.lineTo(238,245);
+    ctx.lineTo(235,245);
+    ctx.fill();
+    ctx.stroke();
+    //Left arm
+
+    ctx.moveTo(175,255);
+    ctx.lineTo(165,255);
+    ctx.lineTo(165,235);
+    ctx.lineTo(172,235);
+    ctx.lineTo(172,245);
+    ctx.lineTo(175,245);
+    ctx.fill();
+    ctx.stroke();
+    
+}
+
+
 drawBody(ctx);
+drawArms(ctx);
 drawEyes(ctx);
 drawMouth(ctx);
 drawOverall(ctx); 
