@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Minion demo</title>
+    <meta charset='utf-8'/>
+  </head>
+  <body>
+    <canvas id='canvas' width="512" height="512">sprite of a minion </canvas>
+    <script src='minion.js'></script>
+    <script type='text/javascript'>
+      var canvas = document.querySelector('#canvas');
+      var ctx = canvas.getContext('2d');
+      ctx.translate(100,100);
+      SailBoat.draw(ctx);
+    </script>
+  </body>
+</html>
