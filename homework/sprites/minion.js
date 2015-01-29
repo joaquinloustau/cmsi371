@@ -151,7 +151,6 @@
         
     }
     var drawMinion = function (ctx, options) {
-      var ctx = canvas.getContext('2d');
       ctx.linewidth = 1;
       ctx.save();
       drawBody(ctx, options);
