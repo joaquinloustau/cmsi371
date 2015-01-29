@@ -1,10 +1,14 @@
 (function () {
-    window.LoustauSprites = window.LoustauSprites || {};
-    window.LoustauSprites.Minion = (function () {
-  	var canvas = document.getElementById('tutorial');
-    var ctx = canvas.getContext('2d');
-    ctx.linewidth = 1;
-    ctx.save();
+  window.LoustauSprites = window.LoustauSprites || {};
+  window.LoustauSprites.Minion = (function () {
+    var DEFAULT_OVERALL_COLOR = "#146696";
+    var DEFAULT_NUMBER_OR_TEETH = 6;
+    var DEFAULT_POS_RIGHT = 1;
+    var DEFAULT_POS_LEFT = 1;
+    var DEFAULT_EYE_SIZE = 4;
+    var DEFAULT_COLOR_GLASSES = "grey";
+    var DEFAULT_IS_SAD = false;
+
 
     var roundRect = function (ctx, x, y, width, height, radius, fill, stroke) {
       if (typeof stroke == "undefined" ) {
@@ -38,8 +42,8 @@
     };
 
     var drawEyes = function (ctx, options) {
-      var colorGlasses = "grey";
-      var eyesize = 4;
+      var colorGlasses = options.colorGlasses || DEFAULT_COLOR_GLASSES;
+      var eyesize = options.eyesize || DEFAULT_EYE_SIZE;
       ctx.beginPath();
       ctx.arc(195,200,10,0,Math.PI*2);
       ctx.moveTo(225,200);
@@ -64,7 +68,8 @@
 
     var drawMouth = function (ctx, options) {
       ctx.fillStyle = "#F88280";
-      var isSad = false;
+      var isSad = options.sad || DEFAULT_IS_SAD;
+      console.log('entre triste');
       if (isSad) {
         ctx.beginPath();
         ctx.arc(205,235,15,0,Math.PI,true);
@@ -75,13 +80,13 @@
         ctx.lineTo(220,220);
         ctx.fill();
         ctx.stroke();
-        drawTeeth(ctx);
+        drawTeeth(ctx, options);
       };
     }
 
     var drawTeeth = function (ctx, options) {
       ctx.fillStyle = "white";
-      var numberOfTeeth = 6;
+      var numberOfTeeth = options.numberOfTeeth || DEFAULT_NUMBER_OR_TEETH;
       var widthOfTeeth = numberOfTeeth * 5;
       for (x=190+((30-widthOfTeeth)/2); x<220-((30-widthOfTeeth)/2); x=x+5) {
         roundRect(ctx, x, 220, 5, 4, 2, true, true);
@@ -89,7 +94,7 @@
     }
 
     var drawOverall = function (ctx, options) {
-      var colorOverall = "#146696"; 
+      var colorOverall = options.colorOverall || DEFAULT_OVERALL_COLOR;
       ctx.beginPath();
       ctx.moveTo(175,235);
       ctx.lineTo(190,245);
@@ -109,12 +114,13 @@
       ctx.strokeStyle="1f4362";
       ctx.stroke();  
     }
-    
-    drawArms = function (ctx) {
-        var posRight = -1;
-        var posLeft = 1;
+
+    drawArms = function (ctx, options) {
+        var posRight = options.posRight || DEFAULT_POS_RIGHT;
+        var posLeft = options.posLeft || DEFAULT_POS_LEFT;
         ctx.beginPath();
         ctx.fillStyle = "#fcda6d";
+        ctx.strokeStyle="1f4362";
         //Right arm
         ctx.moveTo(238,245);
         ctx.lineTo(235,245);
@@ -129,6 +135,7 @@
         ctx.fill();
         ctx.stroke();
         //Left arm
+        ctx.strokeStyle="1f4362";
         ctx.moveTo(172,245);
         ctx.lineTo(175,245);
         ctx.lineTo(190,255);
@@ -143,12 +150,17 @@
         ctx.stroke();
         
     }
-    var draw = function (ctx, options) {
-      drawBody(ctx);
-      drawArms(ctx);
-      drawEyes(ctx);
-      drawMouth(ctx);
-      drawOverall(ctx); 
+    var drawMinion = function (ctx, options) {
+      var ctx = canvas.getContext('2d');
+      ctx.linewidth = 1;
+      ctx.save();
+      drawBody(ctx, options);
+      drawArms(ctx, options);
+      drawEyes(ctx, options);
+      drawMouth(ctx, options);
+      drawOverall(ctx, options); 
     } 
-  })
-})
+
+    return {draw: drawMinion};
+  })();
+}());

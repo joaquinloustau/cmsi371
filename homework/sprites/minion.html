@@ -5,13 +5,24 @@
     <meta charset='utf-8'/>
   </head>
   <body>
-    <canvas id='canvas' width="512" height="512">sprite of a minion </canvas>
+    <canvas id='canvas' width="1512" height="512">sprite of a minion </canvas>
     <script src='minion.js'></script>
     <script type='text/javascript'>
       var canvas = document.querySelector('#canvas');
       var ctx = canvas.getContext('2d');
-      ctx.translate(100,100);
-      SailBoat.draw(ctx);
+      LoustauSprites.Minion.draw(ctx, {sad: true });
+      ctx.translate(100,0);
+      LoustauSprites.Minion.draw(ctx, {sad: false });
+      ctx.translate(100,0);
+      LoustauSprites.Minion.draw(ctx, {colorOverall: "red" });
+      ctx.translate(100,0);
+      LoustauSprites.Minion.draw(ctx, {numberOfTeeth: 2 });
+      ctx.translate(100,0);
+      LoustauSprites.Minion.draw(ctx, {posRight: 1 , posLeft: -1});
+      ctx.translate(100,0);
+      LoustauSprites.Minion.draw(ctx, {posRight: -1 , posLeft: 1});
+      ctx.translate(100,0);
+      LoustauSprites.Minion.draw(ctx, {eyesize: 2, posRight: -1 , posLeft: -1, colorGlasses: "green"});
     </script>
   </body>
 </html>
