@@ -91,29 +91,39 @@ var drawOverall = function (ctx) {
 }
 
 drawArms = function (ctx) {
+    var posRight = -1;
+    var posLeft = 1;
     ctx.beginPath();
     ctx.fillStyle = "#fcda6d";
     //Right arm
-    ctx.moveTo(235,255);
-    ctx.lineTo(245,255);
-    ctx.lineTo(245,235);
-    ctx.lineTo(238,235);
-    ctx.lineTo(238,245);
+    ctx.moveTo(238,245);
     ctx.lineTo(235,245);
+    ctx.lineTo(220,255);
+    ctx.lineTo(238,255);
+    ctx.moveTo(238,250);
+    ctx.moveTo(238,250-(5*posRight));
+    ctx.lineTo(238,(250-(5*posRight))-(10*posRight));
+    ctx.lineTo(245,(250-(5*posRight))-(10*posRight));
+    ctx.lineTo(245,(250+5*posRight));
+    ctx.lineTo(238,(250+5*posRight));
     ctx.fill();
     ctx.stroke();
     //Left arm
-
-    ctx.moveTo(175,255);
-    ctx.lineTo(165,255);
-    ctx.lineTo(165,235);
-    ctx.lineTo(172,235);
-    ctx.lineTo(172,245);
+    ctx.moveTo(172,245);
     ctx.lineTo(175,245);
+    ctx.lineTo(190,255);
+    ctx.lineTo(172,255);
+    ctx.moveTo(172,250);
+    ctx.moveTo(172,250-(5*posLeft));
+    ctx.lineTo(172,(250-(5*posLeft))-(10*posLeft));
+    ctx.lineTo(165,(250-(5*posLeft))-(10*posLeft));
+    ctx.lineTo(165,(250+5*posLeft));
+    ctx.lineTo(172,(250+5*posLeft));
     ctx.fill();
     ctx.stroke();
     
 }
+
 
 
 drawBody(ctx);
