@@ -5,20 +5,20 @@
     <meta charset='utf-8'/>
   </head>
   <body>
-    <canvas id='canvas' width="1200" height="512">sprite of a minion </canvas>
+    <canvas id='canvasBalloon' width="1200" height="512">sprite of a minion </canvas>
     <script src='balloon.js'></script>
     <script type='text/javascript'>
-      var canvasA = document.querySelector('#canvas');
+      var canvasA = document.querySelector('#canvasBalloon');
       var ctx = canvasA.getContext('2d');
       ctx.translate(200,200);
-      LoustauSprites.Balloon.draw('canvas', {});
+      LoustauSprites.Balloon.draw('canvasBalloon', {});
       ctx.translate(200,-100);
-      LoustauSprites.Balloon.draw('canvas', {radius: 40, lightColor: "#4c4cff", darkColor: "#000033"});
+      LoustauSprites.Balloon.draw('canvasBalloon', {radius: 40, lightColor: "#4c4cff", darkColor: "#000033"});
       ctx.translate(200,100);
-      LoustauSprites.Balloon.draw('canvas', {radius: 120, lightColor: "#329932", darkColor: "#002600"});
-      LoustauSprites.Balloon.draw('canvas', {centerX:-250, centerY:85, radius: 60, lightColor: "#ffae19", darkColor: "#996300"});
+      LoustauSprites.Balloon.draw('canvasBalloon', {radius: 120, lightColor: "#329932", darkColor: "#002600"});
+      LoustauSprites.Balloon.draw('canvasBalloon', {centerX:-250, centerY:85, radius: 60, lightColor: "#ffae19", darkColor: "#996300"});
       ctx.translate(-350,200);
-      LoustauSprites.Balloon.draw('canvas', {radius: 50, lightColor: "#ffff4c", darkColor: "#4c4cff"});
+      LoustauSprites.Balloon.draw('canvasBalloon', {radius: 50, lightColor: "#ffff4c", darkColor: "#4c4cff"});
     </script>
   </body>
 </html>

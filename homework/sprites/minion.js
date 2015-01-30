@@ -1,13 +1,17 @@
 (function () {
   window.LoustauSprites = window.LoustauSprites || {};
   window.LoustauSprites.Minion = (function () {
+    var DEFAULT_BODY_COLOR = "#fcda6d";
     var DEFAULT_OVERALL_COLOR = "#146696";
     var DEFAULT_NUMBER_OR_TEETH = 6;
     var DEFAULT_POS_RIGHT = 1;
     var DEFAULT_POS_LEFT = 1;
     var DEFAULT_EYE_SIZE = 4;
-    var DEFAULT_COLOR_GLASSES = "grey";
+    var DEFAULT_COLOR_GLASSES = "#737373";
     var DEFAULT_IS_SAD = false;
+    var MINION_HEIGHT = 100;
+    var MINION_WIDTH =  60;
+
 
 
     var roundRect = function (ctx, x, y, width, height, radius, fill, stroke) {
@@ -36,9 +40,9 @@
       }
     }
 
-    var drawBody = function (ctx) {
-      ctx.fillStyle = "#fcda6d";
-      roundRect(ctx, 175, 175, 60, 100, 25, true, true);
+    var drawBody = function (ctx, options) {
+      ctx.fillStyle = options.bodyColor || DEFAULT_BODY_COLOR;
+      roundRect(ctx, 175, 175, MINION_WIDTH, MINION_HEIGHT, 25, true, true);
     };
 
     var drawEyes = function (ctx, options) {
@@ -69,7 +73,6 @@
     var drawMouth = function (ctx, options) {
       ctx.fillStyle = "#F88280";
       var isSad = options.sad || DEFAULT_IS_SAD;
-      console.log('entre triste');
       if (isSad) {
         ctx.beginPath();
         ctx.arc(205,235,15,0,Math.PI,true);
@@ -119,7 +122,7 @@
         var posRight = options.posRight || DEFAULT_POS_RIGHT;
         var posLeft = options.posLeft || DEFAULT_POS_LEFT;
         ctx.beginPath();
-        ctx.fillStyle = "#fcda6d";
+        ctx.fillStyle = options.bodyColor || DEFAULT_BODY_COLOR;
         ctx.strokeStyle="1f4362";
         //Right arm
         ctx.moveTo(238,245);

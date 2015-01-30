@@ -10,7 +10,9 @@
     var DEFAULT_INCLINATION = 1;
 
 
-    var drawSeesaw = function (ctx, options) {
+    var drawSeesaw = function (canvasID, options) {
+        var canvas = document.getElementById(canvasID);
+        var ctx = canvas.getContext('2d');
         ctx.linewidth = 1;
         ctx.save();
         var xFulcrum = options.xFulcrum || DEFAULT_X_FULCRUM;
