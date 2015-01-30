@@ -10,7 +10,16 @@
     <script type='text/javascript'>
       var canvas = document.querySelector('#canvas');
       var ctx = canvas.getContext('2d');
+      ctx.translate(200,200);
       LoustauSprites.Seesaw.draw(ctx, {});
+      ctx.translate(200,0);
+      LoustauSprites.Seesaw.draw(ctx, {inclination: 0.5});
+      ctx.translate(200,0);
+      LoustauSprites.Seesaw.draw(ctx, {heightFulcrum: 30});
+      ctx.translate(200,0);
+      LoustauSprites.Seesaw.draw(ctx, {lengthLever: 150, inclination: -1 });
+      ctx.translate(200,0);
+      LoustauSprites.Seesaw.draw(ctx, {heightFulcrum: 50, lengthLever: 180, inclination: 0.5});
     </script>
   </body>
 </html>
