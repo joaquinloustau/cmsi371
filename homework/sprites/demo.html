@@ -17,9 +17,9 @@
       ctx.translate(200,0);
       LoustauSprites.Seesaw.draw('canvasDemo', {inclination: 0.5});
       ctx.translate(200,-200);
-      LoustauSprites.Minion.draw(ctx, {posRight: 1 , posLeft: -1});
+      LoustauSprites.Minion.draw('canvasDemo', {posRight: 1 , posLeft: -1});
       ctx.translate(-100,0);
-      LoustauSprites.Minion.draw(ctx, {numberOfTeeth: 3 });
+      LoustauSprites.Minion.draw('canvasDemo', {numberOfTeeth: 3, posRight: -1 , posLeft: 1 });
     </script>
   </body>
 </html>
