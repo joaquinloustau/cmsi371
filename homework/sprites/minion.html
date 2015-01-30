@@ -5,26 +5,26 @@
     <meta charset='utf-8'/>
   </head>
   <body>
-    <canvas id='canvas' width="1512" height="512">sprite of a minion </canvas>
+    <canvas id='canvasMinion' width="1512" height="512">sprite of a minion </canvas>
     <script src='minion.js'></script>
     <script type='text/javascript'>
-      var canvas = document.querySelector('#canvas');
+      var canvas = document.querySelector('#canvasMinion');
       var ctx = canvas.getContext('2d');
-      LoustauSprites.Minion.draw(ctx, {sad: true });
+      LoustauSprites.Minion.draw('canvasMinion', {sad: true });
       ctx.translate(100,0);
-      LoustauSprites.Minion.draw(ctx, {sad: false });
+      LoustauSprites.Minion.draw('canvasMinion', {sad: false });
       ctx.translate(100,0);
-      LoustauSprites.Minion.draw(ctx, {colorOverall: "red" });
+      LoustauSprites.Minion.draw('canvasMinion', {colorOverall: "red" });
       ctx.translate(100,0);
-      LoustauSprites.Minion.draw(ctx, {numberOfTeeth: 2 });
+      LoustauSprites.Minion.draw('canvasMinion', {numberOfTeeth: 2 });
       ctx.translate(100,0);
-      LoustauSprites.Minion.draw(ctx, {posRight: 1 , posLeft: -1});
+      LoustauSprites.Minion.draw('canvasMinion', {posRight: 1 , posLeft: -1});
       ctx.translate(100,0);
-      LoustauSprites.Minion.draw(ctx, {posRight: -1 , posLeft: 1});
+      LoustauSprites.Minion.draw('canvasMinion', {posRight: -1 , posLeft: 1});
       ctx.translate(100,0);
-      LoustauSprites.Minion.draw(ctx, {eyesize: 2, posRight: -1 , posLeft: -1, colorGlasses: "green"});
+      LoustauSprites.Minion.draw('canvasMinion', {eyesize: 2, posRight: -1 , posLeft: -1, colorGlasses: "green"});
       ctx.translate(100,0);
-      LoustauSprites.Minion.draw(ctx, {sad: true, bodyColor: "#774177" });
+      LoustauSprites.Minion.draw('canvasMinion', {sad: true, bodyColor: "#774177" });
     </script>
   </body>
 </html>
