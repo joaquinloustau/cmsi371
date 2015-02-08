@@ -27,8 +27,8 @@
        
         //draw Fulcrum
         ctx.beginPath();
-        ctx.arc(xFulcrum,yFulcrum+heightFulcrum,heightFulcrum,0, Math.PI, true);
-        ctx.lineTo(xFulcrum+heightFulcrum,yFulcrum+heightFulcrum);
+        ctx.arc(xFulcrum,yFulcrum+heightFulcrum,heightFulcrum,0, Math.PI, true); // JD: 1, 6
+        ctx.lineTo(xFulcrum+heightFulcrum,yFulcrum+heightFulcrum); // JD: 1, 6
         ctx.fillStyle = colorFulcrum;
         ctx.fill();
         ctx.stroke();
@@ -36,7 +36,7 @@
         //draw Lever
         ctx.beginPath();
         ctx.rotate(angle*inclination);
-        ctx.moveTo(xFulcrum - (lengthLever/2), yFulcrum);
+        ctx.moveTo(xFulcrum - (lengthLever/2), yFulcrum); // JD: 6 ...etc.
         ctx.lineTo(xFulcrum + (lengthLever/2), yFulcrum);
         ctx.lineTo(xFulcrum + (lengthLever/2), yFulcrum-10);
         ctx.lineTo(xFulcrum - (lengthLever/2), yFulcrum-10);

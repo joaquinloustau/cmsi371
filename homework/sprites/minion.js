@@ -49,9 +49,9 @@
       var colorGlasses = options.colorGlasses || DEFAULT_COLOR_GLASSES;
       var eyesize = options.eyesize || DEFAULT_EYE_SIZE;
       ctx.beginPath();
-      ctx.arc(-10,-25,10,0,Math.PI*2);
-      ctx.moveTo(20,-25);
-      ctx.arc(10,-25,10,0,Math.PI*2);
+      ctx.arc(-10,-25,10,0,Math.PI*2); // JD: 1, 6
+      ctx.moveTo(20,-25); // JD: 1
+      ctx.arc(10,-25,10,0,Math.PI*2); // JD: 1, 6
       ctx.fillStyle = "white";
       ctx.strokeStyle = colorGlasses;
       ctx.lineWidth = 4;
@@ -105,7 +105,7 @@
       ctx.lineTo(30,10);
       ctx.lineTo(30,20);
       ctx.lineTo(15,30);
-      ctx.lineTo(30,30);
+      ctx.lineTo(30,30); // JD: 1
       ctx.quadraticCurveTo(30, 40, 15, 50);
       ctx.lineTo(-15,50);
       ctx.quadraticCurveTo(-30, 40, -30, 30);

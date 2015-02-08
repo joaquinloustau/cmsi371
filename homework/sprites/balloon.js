@@ -3,6 +3,7 @@
   window.LoustauSprites.Balloon = (function () {
     var KAPPA = (4 * (Math.sqrt(2) - 1))/3; 
     //Credit to Adam Stanislav: http://www.whizkidtech.redprince.net/bezier/circle/
+    // JD: 4 ^^^
     var WIDTH_FACTOR = 0.0333;
     var HEIGHT_FACTOR = 0.4;
     var TIE_WIDTH_FACTOR = 0.12;
@@ -81,13 +82,13 @@
       var radius = options.radius || DEFAULT_RADIUS;
       var centerX = options.centerX || DEFAULT_CENTER_X;
       var centerY = options.centerY || DEFAULT_CENTER_Y;
-      var heightDiff = (radius * HEIGHT_FACTOR);
+      var heightDiff = (radius * HEIGHT_FACTOR); // JD: 5
       var lightColor = options.lightColor || DEFAULT_LIGHT_COLOR;
       var darkColor = options.darkColor || DEFAULT_DARK_COLOR;
 
 
       // Create balloon gradient
-      var gradientOffset = (radius/3);
+      var gradientOffset = (radius/3); // JD: 5, 6
       
       var balloonGradient =
       ctx.createRadialGradient(centerX + gradientOffset, centerY - gradientOffset, GRADIENT_CIRCLE_RADIUS,
