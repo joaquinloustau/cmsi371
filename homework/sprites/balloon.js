@@ -1,7 +1,7 @@
 (function () {
   window.LoustauSprites = window.LoustauSprites || {};
-  window.LoustauSprites.Balloon = (function () {
-    var KAPPA = (4 * (Math.sqrt(2) - 1))/3; 
+  window.LoustauSprites.balloon = (function () {
+    var KAPPA = (4 * (Math.sqrt(2) - 1)) / 3; 
     //Credit to Adam Stanislav: http://www.whizkidtech.redprince.net/bezier/circle/
     // JD: 4 ^^^
     var WIDTH_FACTOR = 0.0333;
@@ -14,17 +14,17 @@
     var DEFAULT_CENTER_X = 0;
     var DEFAULT_CENTER_Y = 0;
     var DEFAULT_RADIUS = 80;
-    var DEFAULT_BASE_COLOR = "#e52d2d";
-    var DEFAULT_DARK_COLOR = "#cc0000";
-    var DEFAULT_LIGHT_COLOR = "#ff4c4c";
+    var DEFAULT_BASE_COLOR = "rgb(229,45,45)";
+    var DEFAULT_DARK_COLOR = "rgb(204,0,0)";
+    var DEFAULT_LIGHT_COLOR = "rgb(255,76,76)";
 
     var createShape = function (ctx, options) {
       var centerX = options.centerX || DEFAULT_CENTER_X;
       var centerY = options.centerY || DEFAULT_CENTER_Y;
       var radius = options.radius || DEFAULT_RADIUS;
       var handleLength = KAPPA * radius;
-      var widthDiff = (radius * WIDTH_FACTOR);
-      var heightDiff = (radius * HEIGHT_FACTOR);
+      var widthDiff = radius * WIDTH_FACTOR;
+      var heightDiff = radius * HEIGHT_FACTOR;
       var balloonBottomY = centerY + radius + heightDiff;
 
 
@@ -82,13 +82,13 @@
       var radius = options.radius || DEFAULT_RADIUS;
       var centerX = options.centerX || DEFAULT_CENTER_X;
       var centerY = options.centerY || DEFAULT_CENTER_Y;
-      var heightDiff = (radius * HEIGHT_FACTOR); // JD: 5
+      var heightDiff = radius * HEIGHT_FACTOR; 
       var lightColor = options.lightColor || DEFAULT_LIGHT_COLOR;
       var darkColor = options.darkColor || DEFAULT_DARK_COLOR;
 
 
       // Create balloon gradient
-      var gradientOffset = (radius/3); // JD: 5, 6
+      var gradientOffset = radius / 3; 
       
       var balloonGradient =
       ctx.createRadialGradient(centerX + gradientOffset, centerY - gradientOffset, GRADIENT_CIRCLE_RADIUS,
@@ -115,10 +115,7 @@
       ctx.fill();
     }
    
-    var drawBalloon = function (canvasID, options) {
-      var canvas = document.getElementById(canvasID);
-      var ctx = canvas.getContext('2d');
-
+    var drawBalloon = function (ctx, options) {
       createShape(ctx, options);
       colorBalloon(ctx, options);
     } 

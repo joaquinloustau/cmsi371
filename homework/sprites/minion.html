@@ -1,31 +1,31 @@
 <!doctype html>
 <html>
   <head>
-    <title>Minion demo</title>
+    <title> Minion demo </title>
     <meta charset='utf-8'/>
   </head>
   <body>
-    <canvas id='canvasMinion' width="1512" height="512">sprite of a minion </canvas>
-    <script src='minion.js'></script>
-    <script type='text/javascript'>
+    <canvas id = 'canvasMinion' width = "1512" height = "512"> sprite of a minion </canvas>
+    <script src = 'minion.js'></script>
+    <script type = 'text/javascript'>
       var canvas = document.querySelector('#canvasMinion');
       var ctx = canvas.getContext('2d');
-      ctx.translate(100,100);
-      LoustauSprites.Minion.draw('canvasMinion', {sad: true }); // JD: 7
-      ctx.translate(100,0);
-      LoustauSprites.Minion.draw('canvasMinion', {sad: false });
-      ctx.translate(100,0);
-      LoustauSprites.Minion.draw('canvasMinion', {colorOverall: "red" });
-      ctx.translate(100,0);
-      LoustauSprites.Minion.draw('canvasMinion', {numberOfTeeth: 2 });
-      ctx.translate(100,0);
-      LoustauSprites.Minion.draw('canvasMinion', {posRight: 1 , posLeft: -1});
-      ctx.translate(100,0);
-      LoustauSprites.Minion.draw('canvasMinion', {posRight: -1 , posLeft: 1});
-      ctx.translate(100,0);
-      LoustauSprites.Minion.draw('canvasMinion', {eyesize: 2, posRight: -1 , posLeft: -1, colorGlasses: "green"});
-      ctx.translate(100,0);
-      LoustauSprites.Minion.draw('canvasMinion', {sad: true, bodyColor: "#774177" });
+      ctx.translate(100, 100);
+      LoustauSprites.minion.draw(ctx, {sad: true }); // JD: 7
+      ctx.translate(100, 0);
+      LoustauSprites.minion.draw(ctx, {sad: false });
+      ctx.translate(100, 0);
+      LoustauSprites.minion.draw(ctx, {colorOverall: "red" });
+      ctx.translate(100, 0);
+      LoustauSprites.minion.draw(ctx, {numberOfTeeth: 2 });
+      ctx.translate(100, 0);
+      LoustauSprites.minion.draw(ctx, {posRight: 1 , posLeft: -1});
+      ctx.translate(100, 0);
+      LoustauSprites.minion.draw(ctx, {posRight: -1 , posLeft: 1});
+      ctx.translate(100, 0);
+      LoustauSprites.minion.draw(ctx, {eyesize: 2, posRight: -1 , posLeft: -1, colorGlasses: "green"});
+      ctx.translate(100, 0);
+      LoustauSprites.minion.draw(ctx, {sad: true, bodyColor: "#774177" });
     </script>
   </body>
 </html>

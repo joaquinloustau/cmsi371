@@ -2,24 +2,24 @@
 <html>
   <head>
     <title>Seesaw demo</title>
-    <meta charset='utf-8'/>
+    <meta charset ='utf-8'/>
   </head>
   <body>
-    <canvas id='canvasDemo' width="1200" height="512">sprite of a minion </canvas>
-    <script src='minion.js'></script>
-    <script src='seesaw.js'></script>
-    <script src='balloon.js'></script>
-    <script type='text/javascript'>
+    <canvas id = 'canvasDemo' width = "1200" height = "512">sprite of a minion </canvas>
+    <script src = 'minion.js'></script>
+    <script src = 'seesaw.js'></script>
+    <script src = 'balloon.js'></script>
+    <script type = 'text/javascript'>
       var canvas = document.querySelector('#canvasDemo');
       var ctx = canvas.getContext('2d');
-      ctx.translate(200,200);
-      LoustauSprites.Balloon.draw('canvasDemo', {radius: 40, lightColor: "#4c4cff", darkColor: "#000033"});
-      ctx.translate(200,0);
-      LoustauSprites.Seesaw.draw('canvasDemo', {inclination: 0.5});
-      ctx.translate(200,50);
-      LoustauSprites.Minion.draw('canvasDemo', {posRight: 1 , posLeft: -1});
-      ctx.translate(100,00);
-      LoustauSprites.Minion.draw('canvasDemo', {numberOfTeeth: 3, posRight: -1 , posLeft: 1 });
+      ctx.translate(200, 200);
+      LoustauSprites.balloon.draw(ctx, {radius: 40, lightColor: "#4c4cff", darkColor: "#000033"});
+      ctx.translate(200, 0);
+      LoustauSprites.seesaw.draw(ctx, {inclination: 0.5});
+      ctx.translate(200, 50);
+      LoustauSprites.minion.draw(ctx, {posRight: 1 , posLeft: -1});
+      ctx.translate(100, 00);
+      LoustauSprites.minion.draw(ctx, {numberOfTeeth: 3, posRight: -1 , posLeft: 1 });
     </script>
   </body>
 </html>
