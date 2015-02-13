@@ -152,9 +152,6 @@
         
     }
     var drawMinion = function (ctx, options) {
-      console.log('got called');
-      console.log(ctx);
-      console.log(options);
       ctx.linewidth = 1;
       ctx.save();
       drawBody(ctx, options);
