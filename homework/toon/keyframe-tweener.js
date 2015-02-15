@@ -29,6 +29,7 @@
   // - tx, ty: the location of the sprite (default is 0, 0)
   // - sx, sy: the scale factor of the sprite (default is 1, 1)
   // - rotate: the rotation angle of the sprite (default is 0)
+
   var initializeAnimation = function (settings) {
     // We need to keep track of the current frame.
     var currentFrame = 0,
@@ -39,6 +40,7 @@
     width = settings.width,
     height = settings.height,
     sprites = settings.sprites,
+    background = settings.background,
 
     previousTimestamp = null,
     nextFrame = function (timestamp) {
@@ -50,7 +52,7 @@
       }
 
       // Bail-out #2: Too soon.
-      if (timestamp - previousTimestamp < (1000 / (settings.frameRate || 24))) {
+      if (timestamp - previousTimestamp < (1000 / (settings.frameRate || 600))) {
           window.requestAnimationFrame(nextFrame);
           return;
       }
@@ -60,6 +62,7 @@
 
       // For every sprite, go to the current pair of keyframes.
       // Then, draw the sprite based on the current frame.
+     background(renderingContext);
       for (var i = 0, maxI = sprites.length; i < maxI; i += 1) {
         for (var j = 0, maxJ = sprites[i].keyframes.length - 1; j < maxJ; j += 1) {
           // We look for keyframe pairs such that the current

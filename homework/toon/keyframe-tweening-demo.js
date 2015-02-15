@@ -3,28 +3,29 @@
  * engine is used.
  */
 (function () {
-  var canvas = document.getElementById("canvas"),
-    // First, a selection of "drawing functions" from which we
-    // can choose.  Their common trait: they all accept a single
-    // renderingContext argument.
-    square = function (renderingContext) {
-        renderingContext.fillStyle = "blue";
-        renderingContext.fillRect(-20, -20, 40, 40);
-    },
+    var canvas = document.getElementById("canvas"),
 
-    circle = function (renderingContext) {
-        renderingContext.strokeStyle = "red";
-        renderingContext.beginPath();
-        renderingContext.arc(0, 0, 50, 0, Math.PI * 2);
-        renderingContext.stroke();
-    },
+        backgroundColors = {
+            bottom: "#D4D4D4",
+            middle: "#A9A9A9",
+            top: "#656565",
+            colorStop1: 0.5,
+            colorStop2: 0.6,
+            colorStop3: 0.7
+        },
+        // First, a selection of "drawing functions" from which we
+        // can choose.
+        background = function (renderingContext) {
+            //console.log('hola');
+            var img = new Image();
+            img.src = "grass-and-sky-wallpaper-10.jpg"; // Set source path
+   // Create new img element
+            renderingContext.drawImage(img, 0, 0, canvas.width, canvas.height);
+        },
 
-    // Then, we have "easing functions" that determine how
-    // intermediate frames are computed.
-
-    // Now, to actually define the animated sprites.  Each sprite
-    // has a drawing function and an array of keyframes.
-    sprites = [
+        // Now, to actually define the animated sprites.  Each sprite
+        // has a drawing function and an array of keyframes.
+       sprites = [
       {
         draw: LoustauSprites.minion.draw,
         keyframes: [
@@ -78,19 +79,19 @@
             ty: 120,
           },
           {
-            frame: 1320,
+            frame: 1250,
             tx: 100,
             ty: 120,
           },
           {
-            frame: 1420,
+            frame: 1280,
             tx: 100,
             ty: 90,
             rotate: 15,
 
           },
           {
-            frame: 1520,
+            frame: 1300,
             tx: 100,
             ty: 60,
           }
@@ -147,7 +148,7 @@
             ty: 300,
           },
           {
-            frame: 1120,
+            frame: 1420,
             tx: 550,
             ty: 300,
           }
@@ -201,21 +202,21 @@
             rotate: 8,
           },
           {
-            frame: 1320,
+            frame: 1250,
             tx: 70,
             ty: 70,
             radius: 40,
             rotate: 8,
           },
           {
-            frame: 1420,
+            frame: 1280,
             tx: 77,
             ty: 40,
             radius: 40,
             rotate: 23,
           },
           {
-            frame: 1520,
+            frame: 1300,
             tx: 70,
             ty: 10,
             radius: 40,
@@ -282,7 +283,7 @@
         renderingContext: canvas.getContext("2d"),
         width: canvas.width,
         height: canvas.height,
-        frameRate: 120,
-        sprites: sprites
+        sprites: sprites,
+        background: background
     });
 }());
