@@ -3,31 +3,182 @@
  * engine is used.
  */
 (function () {
-    var canvas = document.getElementById("canvas"),
+  var canvas = document.getElementById("canvas"),
 
-        backgroundColors = {
-            bottom: "#D4D4D4",
-            middle: "#A9A9A9",
-            top: "#656565",
-            colorStop1: 0.5,
-            colorStop2: 0.6,
-            colorStop3: 0.7
-        },
-        // First, a selection of "drawing functions" from which we
-        // can choose.
-        background = function (renderingContext) {
-            //console.log('hola');
-            var img = new Image();
-            img.src = "grass-and-sky-wallpaper-10.jpg"; // Set source path
-   // Create new img element
-            renderingContext.drawImage(img, 0, 0, canvas.width, canvas.height);
-        },
+  minionDefaultValues = {
+    bodyColor: "rgb(252, 218, 109)",
+    overallColor: "rgb(20, 102, 150)",
+    numberOfTeeth: 6,
+    posRight: 1,
+    posLeft: 1,
+    eyeSize: 4,
+    colorGlasses: "rgb(115,115,115)",
+    isSad: false,
+    minionHeight: 100,
+    minionWidth: 60
+  },
 
-        // Now, to actually define the animated sprites.  Each sprite
-        // has a drawing function and an array of keyframes.
+
+  // First, a selection of "drawing functions" from which we can choose.
+  background = function (renderingContext) {
+    var img = new Image();
+    img.src = "grass-and-sky-wallpaper-10.jpg"; // Set source path
+    renderingContext.drawImage(img, 0, 0, canvas.width, canvas.height);
+  },
+
+  roundRect = function (renderingContext, x, y, width, height, radius, fill, stroke) {
+    if (typeof stroke == "undefined" ) {
+      stroke = true;
+    }
+    if (typeof radius === "undefined") {
+      radius = 5;
+    }
+    renderingContext.beginPath();
+    renderingContext.moveTo(x + radius, y);
+    renderingContext.lineTo(x + width - radius, y);
+    renderingContext.quadraticCurveTo(x + width, y, x + width, y + radius);
+    renderingContext.lineTo(x + width, y + height - radius);
+    renderingContext.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    renderingContext.lineTo(x + radius, y + height);
+    renderingContext.quadraticCurveTo(x, y + height, x, y + height - radius);
+    renderingContext.lineTo(x, y + radius);
+    renderingContext.quadraticCurveTo(x, y, x + radius, y);
+    renderingContext.closePath();
+    if (stroke) {
+      renderingContext.stroke();
+    }
+    if (fill) {
+      renderingContext.fill();
+    }
+  }
+
+  drawBody = function (renderingContext, options) {
+    renderingContext.fillStyle = options.bodyColor || minionDefaultValues.bodyColor;
+    roundRect(renderingContext, -30, -50, minionDefaultValues.minionWidth, minionDefaultValues.minionHeight, 25, true, true);
+  };
+
+  drawEyes = function (renderingContext, options) {
+    var colorGlasses = options.colorGlasses || minionDefaultValues.colorGlasses;
+    var eyesize = options.eyesize || minionDefaultValues.eyeSize;
+    renderingContext.beginPath();
+    renderingContext.arc(-10, -25, 10, 0, Math.PI * 2); 
+    renderingContext.moveTo(20, -25); 
+    renderingContext.arc(10, -25, 10, 0, Math.PI * 2); 
+    renderingContext.fillStyle = "white";
+    renderingContext.strokeStyle = colorGlasses;
+    renderingContext.lineWidth = 4;
+    renderingContext.fill();
+    renderingContext.stroke();
+    renderingContext.restore();
+    renderingContext.beginPath();
+    renderingContext.moveTo(-8 - eyesize / 2, -25);
+    renderingContext.arc(-8 - eyesize / 2, -25, eyesize, 0, Math.PI * 2);
+    renderingContext.moveTo(12 - eyesize / 2, -25);
+    renderingContext.arc(12 - eyesize / 2, -25, eyesize, 0, Math.PI * 2);
+    renderingContext.rect(-30, -30, 8, 5);
+    renderingContext.rect(21, -30, 8, 5);
+    renderingContext.fillStyle = "black";
+    renderingContext.fill();
+    renderingContext.stroke();    
+  }
+
+  drawMouth = function (renderingContext, options) {
+    renderingContext.fillStyle = "rgb(248, 130, 128)";
+    var isSad = options.sad || minionDefaultValues.isSad;
+    if (isSad) {
+      renderingContext.beginPath();
+      renderingContext.arc(0, 10, 15, 0, Math.PI, true);
+      renderingContext.stroke();
+    } else {
+      renderingContext.beginPath();
+      renderingContext.arc(0, -5, 15, 0, Math.PI, false);
+      renderingContext.lineTo(15, -5);
+      renderingContext.fill();
+      renderingContext.stroke();
+      drawTeeth(renderingContext, options);
+    };
+  }
+
+  drawTeeth = function (renderingContext, options) {
+    renderingContext.fillStyle = "white";
+    var numberOfTeeth = options.numberOfTeeth || minionDefaultValues.numberOfTeeth;
+    var widthOfTeeth = numberOfTeeth * 5;
+    for (x = -15 + ((30 - widthOfTeeth) / 2); x < 15 - ((30 - widthOfTeeth) / 2); x = x + 5) {
+      roundRect(renderingContext, x, -5, 5, 4, 2, true, true);
+    }
+  }
+
+  drawOverall = function (renderingContext, options) {
+    var colorOverall = options.colorOverall || minionDefaultValues.overallColor;
+    renderingContext.beginPath();
+    renderingContext.moveTo(-30, 10);
+    renderingContext.lineTo(-15, 20);
+    renderingContext.lineTo(15, 20);
+    renderingContext.lineTo(30, 10);
+    renderingContext.lineTo(30, 20);
+    renderingContext.lineTo(15, 30);
+    renderingContext.lineTo(30, 30);
+    renderingContext.quadraticCurveTo(30, 40, 15, 50);
+    renderingContext.lineTo(-15, 50);
+    renderingContext.quadraticCurveTo(-30, 40, -30, 30);
+    renderingContext.lineTo(-15, 30);
+    renderingContext.lineTo(-30, 20);
+    renderingContext.lineTo(-30, 10);
+    renderingContext.fillStyle = colorOverall;
+    renderingContext.fill();
+    renderingContext.strokeStyle = "rgb(31, 67, 98)";
+    renderingContext.stroke();  
+  }
+
+  drawArms = function (renderingContext, options) {
+    var posRight = options.posRight || minionDefaultValues.posRight;
+    var posLeft = options.posLeft || minionDefaultValues.posLeft;
+    renderingContext.beginPath();
+    renderingContext.fillStyle = options.bodyColor || minionDefaultValues.bodyColor;
+    renderingContext.strokeStyle = "rgb(31, 67, 98)";
+    //Right arm
+    renderingContext.moveTo(33, 20);
+    renderingContext.lineTo(31, 20);
+    renderingContext.lineTo(15, 30);
+    renderingContext.lineTo(33, 30);
+    renderingContext.moveTo(33, 25);
+    renderingContext.moveTo(33, 25 - (5 * posRight));
+    renderingContext.lineTo(33, (25 -(5 * posRight)) - (10 * posRight));
+    renderingContext.lineTo(40, (25 -(5 * posRight)) - (10 * posRight));
+    renderingContext.lineTo(40, (25 + 5 * posRight));
+    renderingContext.lineTo(33, (25 + 5 * posRight));
+    renderingContext.fill();
+    renderingContext.stroke();
+    //Left arm
+    renderingContext.strokeStyle = "rgb(31, 67, 98)";
+    renderingContext.moveTo(-33, 20);
+    renderingContext.lineTo(-30, 20);
+    renderingContext.lineTo(-15, 30);
+    renderingContext.lineTo(-33, 30);
+    renderingContext.moveTo(-33, 25);
+    renderingContext.moveTo(-33, 25 - (5 * posLeft));
+    renderingContext.lineTo(-33, (25 - (5 * posLeft)) - (10 * posLeft));
+    renderingContext.lineTo(-40, (25 - (5 * posLeft)) - (10 * posLeft));
+    renderingContext.lineTo(-40, (25 + 5 * posLeft));
+    renderingContext.lineTo(-33, (25 + 5 * posLeft));
+    renderingContext.fill();
+    renderingContext.stroke();
+  }
+
+  drawMinion = function (renderingContext, options) {
+    renderingContext.linewidth = 1;
+    renderingContext.save();
+    drawBody(renderingContext, options);
+    drawArms(renderingContext, options);
+    drawEyes(renderingContext, options);
+    drawMouth(renderingContext, options);
+    drawOverall(renderingContext, options); 
+  } 
+
+  // Now, to actually define the animated sprites.  Each sprite has a drawing function and an array of keyframes.
        sprites = [
       {
-        draw: LoustauSprites.minion.draw,
+        draw: drawMinion,
         keyframes: [
           {
             frame: 0,
@@ -110,7 +261,7 @@
       },
 
       {
-        draw: LoustauSprites.minion.draw,
+        draw: drawMinion,
         keyframes: [
           {
             frame: 0,
