@@ -175,6 +175,126 @@
     drawOverall(renderingContext, options); 
   } 
 
+  balloonDefaultValues = {
+    KAPPA: (4 * (Math.sqrt(2) - 1)) / 3,
+    //Credit to Adam Stanislav: http://www.whizkidtech.redprince.net/bezier/circle/
+    widthFactor: 0.0333,
+    heightFactor: 0.4,
+    tieWidthFactor: 0.12,
+    tieHeightFactor: 0.10,
+    tieCurveFactor: 0.13,
+    gradientFactor: 0.3,
+    gradientCircleRadius: 3,
+    centerX: 0,
+    centerY: 0,
+    radius: 80,
+    baseColor: "rgb(229,45,45)",
+    darkColor: "rgb(204,0,0)",
+    lightColor: "rgb(255,76,76)"
+  }
+
+  createShape = function (renderingContext, options) {
+    var centerX = options.centerX || balloonDefaultValues.centerX;
+    var centerY = options.centerY || balloonDefaultValues.centerY;
+    var radius = options.radius || balloonDefaultValues.radius;
+    var handleLength = balloonDefaultValues.KAPPA * radius;
+    var widthDiff = radius * balloonDefaultValues.widthFactor;
+    var heightDiff = radius * balloonDefaultValues.heightFactor;
+    var balloonBottomY = centerY + radius + heightDiff;
+
+
+    // Begin balloon path 
+    renderingContext.beginPath();
+
+    // Top Left Curve 
+    var topLeftCurveStartX = centerX - radius;
+    var topLeftCurveStartY = centerY;
+      
+    var topLeftCurveEndX = centerX;
+    var topLeftCurveEndY = centerY - radius;
+      
+    renderingContext.moveTo(topLeftCurveStartX, topLeftCurveStartY);
+    renderingContext.bezierCurveTo(topLeftCurveStartX, topLeftCurveStartY - handleLength - widthDiff,
+      topLeftCurveEndX - handleLength, topLeftCurveEndY,
+      topLeftCurveEndX, topLeftCurveEndY);
+                  
+    // Top Right Curve  
+    var topRightCurveStartX = centerX;
+    var topRightCurveStartY = centerY - radius;
+      
+    var topRightCurveEndX = centerX + radius;
+    var topRightCurveEndY = centerY;
+      
+    renderingContext.bezierCurveTo(topRightCurveStartX + handleLength + widthDiff, topRightCurveStartY,
+      topRightCurveEndX, topRightCurveEndY - handleLength,
+      topRightCurveEndX, topRightCurveEndY);
+            
+    // Bottom Right Curve  
+    var bottomRightCurveStartX = centerX + radius;
+    var bottomRightCurveStartY = centerY;
+      
+    var bottomRightCurveEndX = centerX;
+    var bottomRightCurveEndY = balloonBottomY;
+      
+    renderingContext.bezierCurveTo(bottomRightCurveStartX, bottomRightCurveStartY + handleLength,
+      bottomRightCurveEndX + handleLength, bottomRightCurveEndY,
+      bottomRightCurveEndX, bottomRightCurveEndY);              
+      
+    // Bottom Left Curve
+    var bottomLeftCurveStartX = centerX;
+    var bottomLeftCurveStartY = balloonBottomY;
+    
+    var bottomLeftCurveEndX = centerX - radius;
+    var bottomLeftCurveEndY = centerY;
+    
+    renderingContext.bezierCurveTo(bottomLeftCurveStartX - handleLength, bottomLeftCurveStartY,
+      bottomLeftCurveEndX, bottomLeftCurveEndY + handleLength,
+      bottomLeftCurveEndX, bottomLeftCurveEndY);
+  }
+
+  colorBalloon = function (renderingContext, options) {
+    var radius = options.radius || balloonDefaultValues.radius;
+    var centerX = options.centerX || balloonDefaultValues.centerX;
+    var centerY = options.centerY || balloonDefaultValues.centerY;
+    var heightDiff = radius * balloonDefaultValues.heightFactor; 
+    var lightColor = options.lightColor || balloonDefaultValues.lightColor;
+    var darkColor = options.darkColor || balloonDefaultValues.darkColor;
+
+
+    // Create balloon gradient
+    var gradientOffset = radius / 3; 
+    
+    var balloonGradient = renderingContext.createRadialGradient(centerX + gradientOffset,
+      centerY - gradientOffset, balloonDefaultValues.gradientCircleRadius,
+      centerX, centerY, radius + heightDiff);
+
+    balloonGradient.addColorStop(0, lightColor);
+    balloonGradient.addColorStop(0.7, darkColor);
+    
+    renderingContext.fillStyle = balloonGradient;
+    renderingContext.fill();
+ 
+    //Create and Fill Tie
+    var halfTieWidth = (radius * balloonDefaultValues.tieWidthFactor)/2;
+    var tieHeight = (radius * balloonDefaultValues.tieHeightFactor);
+    var tieCurveHeight = (radius * balloonDefaultValues.tieCurveHeight);
+    var balloonBottomY = centerY + radius + heightDiff;
+
+    renderingContext.beginPath();
+    renderingContext.moveTo(centerX - 1, balloonBottomY);
+    renderingContext.lineTo(centerX - halfTieWidth, balloonBottomY + tieHeight);
+    renderingContext.quadraticCurveTo(centerX, balloonBottomY + tieCurveHeight,
+                  centerX + halfTieWidth, balloonBottomY + tieHeight);
+    renderingContext.lineTo(centerX + 1, balloonBottomY);
+    renderingContext.restore();
+    renderingContext.fill();
+  }
+ 
+  drawBalloon = function (renderingContext, options) {
+    createShape(renderingContext, options);
+    colorBalloon(renderingContext, options);
+  } 
+
   // Now, to actually define the animated sprites.  Each sprite has a drawing function and an array of keyframes.
        sprites = [
       {
@@ -318,7 +438,7 @@
       },
 
       {
-        draw: LoustauSprites.balloon.draw,
+        draw: drawBalloon,
         keyframes: [
           {
             frame: 0,
