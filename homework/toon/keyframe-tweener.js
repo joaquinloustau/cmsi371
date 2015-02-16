@@ -46,15 +46,15 @@
     nextFrame = function (timestamp) {
       // Bail-out #1: We just started.
       if (!previousTimestamp) {
-          previousTimestamp = timestamp;
-          window.requestAnimationFrame(nextFrame);
-          return;
+        previousTimestamp = timestamp;
+        window.requestAnimationFrame(nextFrame);
+        return;
       }
 
       // Bail-out #2: Too soon.
       if (timestamp - previousTimestamp < (1000 / (settings.frameRate || 1200))) {
-          window.requestAnimationFrame(nextFrame);
-          return;
+        window.requestAnimationFrame(nextFrame);
+        return;
       }
 
       // Clear the canvas.
@@ -62,74 +62,76 @@
 
       // For every sprite, go to the current pair of keyframes.
       // Then, draw the sprite based on the current frame.
-     background(renderingContext);
+      background(renderingContext);
       for (var i = 0, maxI = sprites.length; i < maxI; i += 1) {
         for (var j = 0, maxJ = sprites[i].keyframes.length - 1; j < maxJ; j += 1) {
+
           // We look for keyframe pairs such that the current
           // frame is between their frame numbers.
           if ((sprites[i].keyframes[j].frame <= currentFrame) &&
               (currentFrame <= sprites[i].keyframes[j + 1].frame)) {
-              // Point to the start and end keyframes.
-              var startKeyframe = sprites[i].keyframes[j],
-                  endKeyframe = sprites[i].keyframes[j + 1];
 
-              // Save the rendering context state.
-              renderingContext.save();
+            // Point to the start and end keyframes.
+            var startKeyframe = sprites[i].keyframes[j],
+                endKeyframe = sprites[i].keyframes[j + 1];
 
-              // Set up our start and distance values, using defaults
-              // if necessary.
-              var ease = startKeyframe.ease || KeyframeTweener.linear,
-                txStart = startKeyframe.tx || 0,
-                txDistance = (endKeyframe.tx || 0) - txStart,
+            // Save the rendering context state.
+            renderingContext.save();
 
-                tyStart = startKeyframe.ty || 0,
-                tyDistance = (endKeyframe.ty || 0) - tyStart,
+            // Set up our start and distance values, using defaults
+            // if necessary.
+            var ease = startKeyframe.ease || KeyframeTweener.linear,
+              txStart = startKeyframe.tx || 0,
+              txDistance = (endKeyframe.tx || 0) - txStart,
 
-                sxStart = startKeyframe.sx || 1,
-                sxDistance = (endKeyframe.sx || 1) - sxStart,
+              tyStart = startKeyframe.ty || 0,
+              tyDistance = (endKeyframe.ty || 0) - tyStart,
 
-                syStart = startKeyframe.sy || 1,
-                syDistance = (endKeyframe.sy || 1) - syStart,
+              sxStart = startKeyframe.sx || 1,
+              sxDistance = (endKeyframe.sx || 1) - sxStart,
 
-                radiusStart  = startKeyframe.radius || 0,
-                radiusDistance = (endKeyframe.radius || 0) - radiusStart,
+              syStart = startKeyframe.sy || 1,
+              syDistance = (endKeyframe.sy || 1) - syStart,
 
-                inclinationStart  = startKeyframe.inclination || 0,
-                inclinationDistance = (endKeyframe.inclination || 0) - inclinationStart,
+              radiusStart  = startKeyframe.radius || 0,
+              radiusDistance = (endKeyframe.radius || 0) - radiusStart,
 
-                colorGlassesStart  = startKeyframe.colorGlasses || 0,
-                colorGlassesDistance = (endKeyframe.colorGlasses || 0) - colorGlassesStart,
+              inclinationStart  = startKeyframe.inclination || 0,
+              inclinationDistance = (endKeyframe.inclination || 0) - inclinationStart,
 
-                rotateStart = (startKeyframe.rotate || 0) * Math.PI / 180,
-                rotateDistance = (endKeyframe.rotate || 0) * Math.PI / 180 - rotateStart;
+              colorGlassesStart  = startKeyframe.colorGlasses || 0,
+              colorGlassesDistance = (endKeyframe.colorGlasses || 0) - colorGlassesStart,
 
-              var currentTweenFrame = currentFrame - startKeyframe.frame,
-                  duration = endKeyframe.frame - startKeyframe.frame + 1;
+              rotateStart = (startKeyframe.rotate || 0) * Math.PI / 180,
+              rotateDistance = (endKeyframe.rotate || 0) * Math.PI / 180 - rotateStart;
 
-              // Build our transform according to where we should be.
-              renderingContext.translate(
-                ease(currentTweenFrame, txStart, txDistance, duration),
-                ease(currentTweenFrame, tyStart, tyDistance, duration)
-              );
-              renderingContext.scale(
-                ease(currentTweenFrame, sxStart, sxDistance, duration),
-                ease(currentTweenFrame, syStart, syDistance, duration)
-              );
-              renderingContext.rotate(
-                ease(currentTweenFrame, rotateStart, rotateDistance, duration)
-              );
+            var currentTweenFrame = currentFrame - startKeyframe.frame,
+                duration = endKeyframe.frame - startKeyframe.frame + 1;
 
-              // Draw the sprite.
-              sprites[i].draw(renderingContext, {
-                colorGlasses: ease(currentTweenFrame, colorGlassesStart, colorGlassesDistance, duration),
-                radius: ease(currentTweenFrame, radiusStart, radiusDistance, duration),
-                inclination: ease(currentTweenFrame, inclinationStart, inclinationDistance, duration),
-              } );
+            // Build our transform according to where we should be.
+            renderingContext.translate(
+              ease(currentTweenFrame, txStart, txDistance, duration),
+              ease(currentTweenFrame, tyStart, tyDistance, duration)
+            );
 
-               //console.log(currentTweenFrame);
+            renderingContext.scale(
+              ease(currentTweenFrame, sxStart, sxDistance, duration),
+              ease(currentTweenFrame, syStart, syDistance, duration)
+            );
 
-              // Clean up.
-              renderingContext.restore();
+            renderingContext.rotate(
+              ease(currentTweenFrame, rotateStart, rotateDistance, duration)
+            );
+
+            // Draw the sprite.
+            sprites[i].draw(renderingContext, {
+              colorGlasses: ease(currentTweenFrame, colorGlassesStart, colorGlassesDistance, duration),
+              radius: ease(currentTweenFrame, radiusStart, radiusDistance, duration),
+              inclination: ease(currentTweenFrame, inclinationStart, inclinationDistance, duration),
+            });
+
+            // Clean up.
+            renderingContext.restore();
             }
           }
         }
@@ -143,29 +145,29 @@
   };
 
   window.KeyframeTweener = {
-      // The module comes with a library of common easing functions.
-      linear: function (currentTime, start, distance, duration) {
-          var percentComplete = currentTime / duration;
-          return distance * percentComplete + start;
-      },
+    // The module comes with a library of common easing functions.
+    linear: function (currentTime, start, distance, duration) {
+        var percentComplete = currentTime / duration;
+        return distance * percentComplete + start;
+    },
 
-      quadEaseIn: function (currentTime, start, distance, duration) {
-          var percentComplete = currentTime / duration;
-          return distance * percentComplete * percentComplete + start;
-      },
+    quadEaseIn: function (currentTime, start, distance, duration) {
+        var percentComplete = currentTime / duration;
+        return distance * percentComplete * percentComplete + start;
+    },
 
-      quadEaseOut: function (currentTime, start, distance, duration) {
-          var percentComplete = currentTime / duration;
-          return -distance * percentComplete * (percentComplete - 2) + start;
-      },
+    quadEaseOut: function (currentTime, start, distance, duration) {
+        var percentComplete = currentTime / duration;
+        return -distance * percentComplete * (percentComplete - 2) + start;
+    },
 
-      quadEaseInAndOut: function (currentTime, start, distance, duration) {
-          var percentComplete = currentTime / (duration / 2);
-          return (percentComplete < 1) ?
-                  (distance / 2) * percentComplete * percentComplete + start :
-                  (-distance / 2) * ((percentComplete - 1) * (percentComplete - 3) - 1) + start;
-      },
+    quadEaseInAndOut: function (currentTime, start, distance, duration) {
+        var percentComplete = currentTime / (duration / 2);
+        return (percentComplete < 1) ?
+                (distance / 2) * percentComplete * percentComplete + start :
+                (-distance / 2) * ((percentComplete - 1) * (percentComplete - 3) - 1) + start;
+    },
 
-      initialize: initializeAnimation
+    initialize: initializeAnimation
   };
 }());
