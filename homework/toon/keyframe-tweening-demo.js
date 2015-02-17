@@ -13,15 +13,17 @@
   },
 
   createJumpKeyframes = function (startFrame, startTx, startTy) {
+    var result = [ ];
     for (i = 0; i < 10; i++) {
-      return [
+      result.push(
         {
           frame: startFrame + (10 * i),
           tx: startTx,
           ty: startTy + 150 * Math.pow(-1, i),
-        },
-      ];
+        }
+      );
     }
+    return result;
   },
 
   // Now, to actually define the animated sprites.  Each sprite has a drawing function and an array of keyframes.
@@ -40,6 +42,11 @@ sprites[0].keyframes = sprites[0].keyframes.concat(
     createJumpKeyframes(240, 150, 650)
 );*/
 
+  demoMinion = {
+    draw: LoustauSprites.minion.draw,
+    keyframes: [
+    ]
+  },
 
        sprites = [
       {
@@ -325,6 +332,12 @@ sprites[0].keyframes = sprites[0].keyframes.concat(
         ]
       },
     ];
+
+  demoMinion.keyframes.push.apply(demoMinion.keyframes, createJumpKeyframes(0, 300, 300));
+  demoMinion.keyframes.push.apply(demoMinion.keyframes, createJumpKeyframes(200, 500, 300));
+  console.log(demoMinion);
+  sprites.push(demoMinion);
+
 
     // Finally, we initialize the engine.  Mainly, it needs
     // to know the rendering context to use.  And the animations
