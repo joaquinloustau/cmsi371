@@ -128,6 +128,7 @@
               colorGlasses: ease(currentTweenFrame, colorGlassesStart, colorGlassesDistance, duration),
               radius: ease(currentTweenFrame, radiusStart, radiusDistance, duration),
               inclination: ease(currentTweenFrame, inclinationStart, inclinationDistance, duration),
+
             });
 
             // Clean up.

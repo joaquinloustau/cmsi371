@@ -12,7 +12,35 @@
     renderingContext.drawImage(img, 0, 0, canvas.width, canvas.height);
   },
 
+  createJumpKeyframes = function (startFrame, startTx, startTy) {
+    for (i = 0; i < 10; i++) {
+      return [
+        {
+          frame: startFrame + (10 * i),
+          tx: startTx,
+          ty: startTy + 150 * Math.pow(-1, i),
+        },
+      ];
+    }
+  },
+
   // Now, to actually define the animated sprites.  Each sprite has a drawing function and an array of keyframes.
+
+/*sprites = [{
+    draw: LoustauSprites.minion.draw,
+    keyframes: [ ]
+}];
+
+sprites[0].keyframes = sprites[0].keyframes.concat({
+   frame: 0, tx: 150, ty: 650, colorGlasses: "green"
+});
+
+
+sprites[0].keyframes = sprites[0].keyframes.concat(
+    createJumpKeyframes(240, 150, 650)
+);*/
+
+
        sprites = [
       {
         draw: LoustauSprites.minion.draw,
@@ -110,6 +138,7 @@
             frame: 240,
             tx: 250,
             ty: 600,
+            ease: KeyframeTweener.quadEaseOut,
           },
           {
             frame: 360,
@@ -120,6 +149,7 @@
             frame: 400,
             tx: 250,
             ty: 600,
+            ease: KeyframeTweener.quadEaseOut,
           },
           {
             frame: 430,
