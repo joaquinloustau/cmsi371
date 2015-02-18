@@ -3,6 +3,9 @@
  * engine is used.
  */
 (function () {
+  var snd = new Audio("happy.wav"); // buffers automatically when created
+  snd.play();
+
   var canvas = document.getElementById("canvas"),
 
   // First, a selection of "drawing functions" from which we can choose.
@@ -37,6 +40,10 @@
           frame: startFrame + (150 * i),
           tx: startTx,
           ty: startTy - 100 * i,
+          radius: 35,
+          darkColor: '#'+('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6),
+          lightColor: '#'+('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6),
+
         }
       );
     }
@@ -45,7 +52,13 @@
 
   createGrandFinale = function () {
     for (m = 0; m < 7; m++) {
-       demoMinion.keyframes.push.apply(demoMinion.keyframes, createFlyKeyframes(1750, 30 + (150*m), 600));
+      demoMinion.keyframes.push.apply(demoMinion.keyframes, createFlyKeyframes(1750, 50 + (150*m), 850))
+    }
+  },
+
+  createFinalBalloons = function () {
+    for (n = 0; n < 7; n++) {
+      demoBalloon.keyframes.push.apply(demoBalloon.keyframes, createFlyKeyframes(1750, 110 + (150*n), 820))
     }
   },
 
@@ -53,6 +66,12 @@
 
   demoMinion = {
     draw: LoustauSprites.minion.draw,
+    keyframes: [
+    ]
+  },
+
+  demoBalloon = {
+    draw: LoustauSprites.balloon.draw,
     keyframes: [
     ]
   },
@@ -380,11 +399,13 @@
   ];
 
   createGrandFinale();
+  createFinalBalloons();
   demoMinion.keyframes.push.apply(demoMinion.keyframes, createJumpKeyframes(0, 150, 625));
   demoMinion.keyframes.push.apply(demoMinion.keyframes, createJumpKeyframes(10, 250, 600));
 
   console.log(demoMinion);
   sprites.push(demoMinion);
+  sprites.push(demoBalloon);
 
   // Finally, we initialize the engine.  Mainly, it needs
   // to know the rendering context to use.  And the animations
