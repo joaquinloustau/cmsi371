@@ -107,6 +107,8 @@
           ty: 600,
           eyesize: 4,
           numberOfTeeth: 6,
+          ease: KeyframeTweener.inQuintic,
+
         },
         {
           frame: 950,
@@ -114,6 +116,8 @@
           ty: 600,
           eyesize: 4,
           numberOfTeeth: 6,
+          ease: KeyframeTweener.inQuintic,
+
         },
         {
           frame: 1100,
@@ -121,6 +125,9 @@
           ty: 610,
           eyesize: 4,
           numberOfTeeth: 6,
+          ease: KeyframeTweener.inQuintic,
+
+
         },
         {
           frame: 1250,
@@ -128,6 +135,8 @@
           ty: 610,
           eyesize: 4,
           numberOfTeeth: 6,
+          ease: KeyframeTweener.inQuintic,
+
         },
         {
           frame: 1300,
@@ -207,6 +216,7 @@
           tx: 550,
           ty: 600,
           numberOfTeeth: 6,
+          ease: KeyframeTweener.outElastic,
         },
         {
           frame: 1250,
