@@ -11,19 +11,19 @@
       var canvas = document.querySelector('#canvasMinion');
       var ctx = canvas.getContext('2d');
       ctx.translate(100, 100);
-      LoustauSprites.minion.draw(ctx, {sad: true }); // JD: 7
+      LoustauSprites.minion.draw(ctx, {sad: true }); 
       ctx.translate(100, 0);
-      LoustauSprites.minion.draw(ctx, {sad: false });
+      LoustauSprites.minion.draw(ctx, {sad: false, numberOfTeeth: 6});
       ctx.translate(100, 0);
       LoustauSprites.minion.draw(ctx, {colorOverall: "red" });
       ctx.translate(100, 0);
       LoustauSprites.minion.draw(ctx, {numberOfTeeth: 2 });
       ctx.translate(100, 0);
-      LoustauSprites.minion.draw(ctx, {posRight: 1 , posLeft: -1});
+      LoustauSprites.minion.draw(ctx, {posRight: 1 , posLeft: -1, numberOfTeeth: 6});
       ctx.translate(100, 0);
-      LoustauSprites.minion.draw(ctx, {posRight: -1 , posLeft: 1});
+      LoustauSprites.minion.draw(ctx, {posRight: -1 , posLeft: 1, numberOfTeeth: 4 });
       ctx.translate(100, 0);
-      LoustauSprites.minion.draw(ctx, {eyesize: 2, posRight: -1 , posLeft: -1, colorGlasses: "green"});
+      LoustauSprites.minion.draw(ctx, {eyesize: 2, posRight: -1 , posLeft: -1, colorGlasses: "green", numberOfTeeth: 5});
       ctx.translate(100, 0);
       LoustauSprites.minion.draw(ctx, {sad: true, bodyColor: "#774177" });
     </script>

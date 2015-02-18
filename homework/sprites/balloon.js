@@ -3,7 +3,6 @@
   window.LoustauSprites.balloon = (function () {
     var KAPPA = (4 * (Math.sqrt(2) - 1)) / 3; 
     //Credit to Adam Stanislav: http://www.whizkidtech.redprince.net/bezier/circle/
-    // JD: 4 ^^^
     var WIDTH_FACTOR = 0.0333;
     var HEIGHT_FACTOR = 0.4;
     var TIE_WIDTH_FACTOR = 0.12;

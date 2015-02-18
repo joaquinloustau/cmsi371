@@ -7,7 +7,7 @@
     var DEFAULT_COLOR_FULCRUM = "rgb(76, 76, 76)"
     var DEFAULT_LENGTH_LEVER = 250;
     var DEFAULT_COLOR_LEVER = "rgb(66, 16, 16)" 
-    var DEFAULT_INCLINATION = 1;
+    var DEFAULT_INCLINATION = 0
 
 
     var drawSeesaw = function (ctx, options) {
@@ -25,7 +25,7 @@
        
         //draw Fulcrum
         ctx.beginPath();
-        ctx.arc(xFulcrum, yFulcrum + heightFulcrum, heightFulcrum, 0, Math.PI, true); // JD: 1, 6
+        ctx.arc(xFulcrum, yFulcrum + heightFulcrum, heightFulcrum, 0, Math.PI, true);
         ctx.lineTo(xFulcrum + heightFulcrum, yFulcrum + heightFulcrum); 
         ctx.fillStyle = colorFulcrum;
         ctx.fill();

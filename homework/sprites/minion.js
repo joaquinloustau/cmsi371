@@ -3,11 +3,11 @@
   window.LoustauSprites.minion = (function () {
     var DEFAULT_BODY_COLOR = "rgb(252, 218, 109)";
     var DEFAULT_OVERALL_COLOR = "rgb(20, 102, 150)";
-    var DEFAULT_NUMBER_OR_TEETH = 6;
+    var DEFAULT_NUMBER_OR_TEETH = 0;
     var DEFAULT_POS_RIGHT = 1;
     var DEFAULT_POS_LEFT = 1;
     var DEFAULT_EYE_SIZE = 4;
-    var DEFAULT_COLOR_GLASSES = "rgb(115,115,115)";
+    var DEFAULT_COLOR_GLASSES = "rgb(115, 115, 115)";
     var DEFAULT_IS_SAD = false;
     var MINION_HEIGHT = 100;
     var MINION_WIDTH =  60;
@@ -89,8 +89,10 @@
       ctx.fillStyle = "white";
       var numberOfTeeth = options.numberOfTeeth || DEFAULT_NUMBER_OR_TEETH;
       var widthOfTeeth = numberOfTeeth * 5;
-      for (x = -15 + ((30 - widthOfTeeth) / 2); x < 15 - ((30 - widthOfTeeth) / 2); x = x + 5) {
-        roundRect(ctx, x, -5, 5, 4, 2, true, true);
+      if (numberOfTeeth != 0) {
+        for (x = -15 + ((30 - widthOfTeeth) / 2); x < 15 - ((30 - widthOfTeeth) / 2); x = x + 5) {
+          roundRect(ctx, x, -5, 5, 4, 2, true, true);
+        }
       }
     }
 

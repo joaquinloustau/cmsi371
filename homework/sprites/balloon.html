@@ -10,16 +10,15 @@
     <script type = 'text/javascript'>
       var canvasA = document.querySelector('#canvasBalloon');
       var ctx = canvasA.getContext('2d');
-      ctx.translate(200, 200); // JD: 1
-      LoustauSprites.balloon.draw(ctx, {}); // JD: 2
+      ctx.translate(200, 200);
+      LoustauSprites.balloon.draw(ctx, {}); 
       ctx.translate(200, -100);
-      // JD: 3
-      LoustauSprites.balloon.draw(ctx, {radius: 40, lightColor: "#4c4cff", darkColor: "#000033"});
+      LoustauSprites.balloon.draw(ctx, {radius: 40, lightColor: "rgb(76, 76, 255)", darkColor: "rgb(0, 0, 51)"});
       ctx.translate(200, 100);
-      LoustauSprites.balloon.draw(ctx, {radius: 120, lightColor: "#329932", darkColor: "#002600"});
-      LoustauSprites.balloon.draw(ctx, {centerX:-250, centerY:85, radius: 60, lightColor: "#ffae19", darkColor: "#996300"});
+      LoustauSprites.balloon.draw(ctx, {radius: 120, lightColor: "rgb(50, 153, 50)", darkColor: "rgb(0, 38, 0)"});
+      LoustauSprites.balloon.draw(ctx, {centerX:-250, centerY:85, radius: 60, lightColor: "rgb(255, 174, 25)", darkColor: "rgb(153, 99, 0)"});
       ctx.translate(-350, 200);
-      LoustauSprites.balloon.draw(ctx, {radius: 50, lightColor: "#ffff4c", darkColor: "#4c4cff"});
+      LoustauSprites.balloon.draw(ctx, {radius: 50, lightColor: "rgb(255, 255, 76)", darkColor: "rgb(76, 76, 255)"});
     </script>
   </body>
 </html>
