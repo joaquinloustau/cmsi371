@@ -99,8 +99,8 @@
               inclinationStart  = startKeyframe.inclination || 0,
               inclinationDistance = (endKeyframe.inclination || 0) - inclinationStart,
 
-              colorGlassesStart  = startKeyframe.colorGlasses || 0,
-              colorGlassesDistance = (endKeyframe.colorGlasses || 0) - colorGlassesStart,
+              eyesizeStart  = startKeyframe.eyesize || 0,
+              eyesizeDistance = (endKeyframe.eyesize || 0) - eyesizeStart,
 
               rotateStart = (startKeyframe.rotate || 0) * Math.PI / 180,
               rotateDistance = (endKeyframe.rotate || 0) * Math.PI / 180 - rotateStart;
@@ -123,12 +123,16 @@
               ease(currentTweenFrame, rotateStart, rotateDistance, duration)
             );
 
+
             // Draw the sprite.
             sprites[i].draw(renderingContext, {
-              colorGlasses: ease(currentTweenFrame, colorGlassesStart, colorGlassesDistance, duration),
               radius: ease(currentTweenFrame, radiusStart, radiusDistance, duration),
               inclination: ease(currentTweenFrame, inclinationStart, inclinationDistance, duration),
-
+              sad: sprites[i].keyframes[j].sad,
+              posRight: sprites[i].keyframes[j].posRight,
+              posLeft: sprites[i].keyframes[j].posLeft,
+              numberOfTeeth: sprites[i].keyframes[j].numberOfTeeth,
+              eyesize: ease(currentTweenFrame, eyesizeStart, eyesizeDistance, duration),
             });
 
             // Clean up.
