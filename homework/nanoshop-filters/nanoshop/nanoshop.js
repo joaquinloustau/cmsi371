@@ -3,30 +3,50 @@
  * pixel-level image processing.
  */
 var Nanoshop = {
-    /*
-     * Applies the given filter to the given ImageData object,
-     * then modifies its pixels according to the given filter.
-     *
-     * A filter is a function (x, y, r, g, b, a) that returns another
-     * pixel as a 4-element array representing an RGBA value.
-     */
-    applyFilter: function (imageData, filter) {
-        // For every pixel, replace with something determined by the filter.
-        var pixelArray = imageData.data;
 
-        for (var i = 0, max = imageData.width * imageData.height * 4; i < max; i += 4) {
-            var pixelIndex = i / 4;
+  /*
+   * Applies the given filter to the given ImageData object,
+   * then modifies its pixels according to the given filter.
+   *
+   * A filter is a function (x, y, r, g, b, a) that returns another
+   * pixel as a 4-element array representing an RGBA value.
+   */
 
-            var pixel = filter(
-                pixelIndex % imageData.width, Math.floor(pixelIndex / imageData.height),
-                pixelArray[i], pixelArray[i + 1], pixelArray[i + 2], pixelArray[i + 3]
-            );
+  applyFilter: function (imageData, filter) {
+    // For every pixel, replace with something determined by the filter.
+    var pixelArray = imageData.data;
 
-            for (var j = 0; j < 4; j += 1) {
-                pixelArray[i + j] = pixel[j];
-            }
+    for (var i = 0, max = imageData.width * imageData.height * 4; i < max; i += 4) {
+
+        var pixel = filter(
+            pixelArray[i], pixelArray[i + 1], pixelArray[i + 2], pixelArray[i + 3]
+        );
+
+        for (var j = 0; j < 4; j += 1) {
+            pixelArray[i + j] = pixel[j];
         }
-
-        return imageData;
     }
+    return imageData;
+  },
+
+  //Options of filters to choose from:
+
+  basicDarkener: function (r,g,b,a) {
+    return [r / 2, g / 2, b / 2, a];
+  },
+
+  grayScaler: function (r,g,b,a) {
+    var grayscaleValue = 0.21 * r + 0.72 * g + 0.07 * b;
+    // Credit for luminosity formula: http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
+    return [grayscaleValue, grayscaleValue, grayscaleValue, a];
+  },
+
+  sepia: function (r,g,b,a) {
+    var outputRed = (r * .393) + (g *.769) + (b * .189) < 255 ? (r * .393) + (g *.769) + (b * .189) : 255;
+    var outputGreen = (r * .349) + (g *.686) + (b * .168) < 255 ? (r * .349) + (g *.686) + (b * .168) : 255;
+    var outputBlue = (r * .272) + (g *.534) + (b * .131) < 255 ? (r * .272) + (g *.534) + (b * .131) : 255;
+    //Credif for Sepia toning: http://www.techrepublic.com/blog/how-do-i/how-do-i-convert-images-to-grayscale-and-sepia-tone-using-c/
+
+    return [outputRed, outputGreen, outputBlue, a];
+  }
 };
