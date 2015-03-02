@@ -45,7 +45,7 @@ var Nanoshop = {
     var outputRed = (r * .393) + (g *.769) + (b * .189) < 255 ? (r * .393) + (g *.769) + (b * .189) : 255;
     var outputGreen = (r * .349) + (g *.686) + (b * .168) < 255 ? (r * .349) + (g *.686) + (b * .168) : 255;
     var outputBlue = (r * .272) + (g *.534) + (b * .131) < 255 ? (r * .272) + (g *.534) + (b * .131) : 255;
-    //Credif for Sepia toning: http://www.techrepublic.com/blog/how-do-i/how-do-i-convert-images-to-grayscale-and-sepia-tone-using-c/
+    //Credit for Sepia toning: http://www.techrepublic.com/blog/how-do-i/how-do-i-convert-images-to-grayscale-and-sepia-tone-using-c/
 
     return [outputRed, outputGreen, outputBlue, a];
   }

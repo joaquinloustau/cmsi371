@@ -3,117 +3,146 @@
  * pixel-level image processing using a pixel's "neighborhood."
  */
 var NanoshopNeighborhood = {
-    /*
-     * A basic "darkener"---this one does not even use the entire pixel neighborhood;
-     * just the exact current pixel like the original Nanoshop.
-     */
-    darkener: function (x, y, rgbaNeighborhood) {
-        return [
-            rgbaNeighborhood[4].r / 2,
-            rgbaNeighborhood[4].g / 2,
-            rgbaNeighborhood[4].b / 2,
-            rgbaNeighborhood[4].a
-        ];
-    },
 
-    /*
-     * A basic "averager"---this one returns the average of all the pixels in the
-     * given neighborhood.
-     */
-    averager: function (x, y, rgbaNeighborhood) {
-        var rTotal = 0,
-            gTotal = 0,
-            bTotal = 0,
-            aTotal = 0,
-            i;
+  /*
+   * Applies the given filter to the given ImageData object,
+   * then modifies its pixels according to the given filter.
+   *
+   * A filter is a function ({r, g, b, a}[9]) that returns another
+   * color as a 4-element array representing the new RGBA value
+   * that should go in the center pixel.
+   */
+  applyFilter: function (renderingContext, imageData, filter) {
+    // For every pixel, replace with something determined by the filter.
+    var result = renderingContext.createImageData(imageData.width, imageData.height),
+        rowWidth = imageData.width * 4,
+        sourceArray = imageData.data,
+        destinationArray = result.data,
 
-        for (i = 0; i < 9; i += 1) {
-            rTotal += rgbaNeighborhood[i].r;
-            gTotal += rgbaNeighborhood[i].g;
-            bTotal += rgbaNeighborhood[i].b;
-            aTotal += rgbaNeighborhood[i].a;
-        }
+        // A convenience function for creating an rgba object.
+        rgba = function (startIndex) {
+          return {
+            r: sourceArray[startIndex],
+            g: sourceArray[startIndex + 1],
+            b: sourceArray[startIndex + 2],
+            a: sourceArray[startIndex + 3]
+          };
+        };
 
-        return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
-    },
+    for (var i = 0, max = imageData.width * imageData.height * 4; i < max; i += 4) {
+      // The 9-color array that we build must factor in image boundaries.
+      // If a particular location is out of range, the color supplied is that
+      // of the extant pixel that is adjacent to it.
+      var iAbove = i - rowWidth,
+          iBelow = i + rowWidth,
+          pixelColumn = i % rowWidth,
+          firstRow = sourceArray[iAbove] === undefined,
+          lastRow = sourceArray[iBelow] === undefined;
 
-    /*
-     * Applies the given filter to the given ImageData object,
-     * then modifies its pixels according to the given filter.
-     *
-     * A filter is a function ({r, g, b, a}[9]) that returns another
-     * color as a 4-element array representing the new RGBA value
-     * that should go in the center pixel.
-     */
-    applyFilter: function (renderingContext, imageData, filter) {
-        // For every pixel, replace with something determined by the filter.
-        var result = renderingContext.createImageData(imageData.width, imageData.height),
-            rowWidth = imageData.width * 4,
-            sourceArray = imageData.data,
-            destinationArray = result.data,
+      var pixelIndex = i / 4,
+          pixel = filter(pixelIndex % imageData.width, Math.floor(pixelIndex / imageData.height),
+            [
+              // The row of pixels above the current one.
+              firstRow ?
+                (pixelColumn ? rgba(i - 4) : rgba(i)) :
+                (pixelColumn ? rgba(iAbove - 4) : rgba(iAbove)),
 
-            // A convenience function for creating an rgba object.
-            rgba = function (startIndex) {
-                return {
-                    r: sourceArray[startIndex],
-                    g: sourceArray[startIndex + 1],
-                    b: sourceArray[startIndex + 2],
-                    a: sourceArray[startIndex + 3]
-                };
-            };
+              firstRow ? rgba(i) : rgba(iAbove),
 
-        for (var i = 0, max = imageData.width * imageData.height * 4; i < max; i += 4) {
-            // The 9-color array that we build must factor in image boundaries.
-            // If a particular location is out of range, the color supplied is that
-            // of the extant pixel that is adjacent to it.
-            var iAbove = i - rowWidth,
-                iBelow = i + rowWidth,
-                pixelColumn = i % rowWidth,
-                firstRow = sourceArray[iAbove] === undefined,
-                lastRow = sourceArray[iBelow] === undefined;
+              firstRow ?
+                ((pixelColumn < rowWidth - 4) ? rgba(i + 4) : rgba(i)) :
+                ((pixelColumn < rowWidth - 4) ? rgba(iAbove + 4) : rgba(iAbove)),
 
-            var pixelIndex = i / 4,
-                pixel = filter(pixelIndex % imageData.width, Math.floor(pixelIndex / imageData.height),
-                    [
-                        // The row of pixels above the current one.
-                        firstRow ?
-                            (pixelColumn ? rgba(i - 4) : rgba(i)) :
-                            (pixelColumn ? rgba(iAbove - 4) : rgba(iAbove)),
+              // The current row of pixels.
+              pixelColumn ? rgba(i - 4) : rgba(i),
 
-                        firstRow ? rgba(i) : rgba(iAbove),
+              // The center pixel: the filter's returned color goes here
+              // (based on the loop, we are at least sure to have this).
+              rgba(i),
 
-                        firstRow ?
-                            ((pixelColumn < rowWidth - 4) ? rgba(i + 4) : rgba(i)) :
-                            ((pixelColumn < rowWidth - 4) ? rgba(iAbove + 4) : rgba(iAbove)),
+              (pixelColumn < rowWidth - 4) ? rgba(i + 4) : rgba(i),
 
-                        // The current row of pixels.
-                        pixelColumn ? rgba(i - 4) : rgba(i),
+              // The row of pixels below the current one.
+              lastRow ?
+                (pixelColumn ? rgba(i - 4) : rgba(i)) :
+                (pixelColumn ? rgba(iBelow - 4) : rgba(iBelow)),
 
-                        // The center pixel: the filter's returned color goes here
-                        // (based on the loop, we are at least sure to have this).
-                        rgba(i),
+              lastRow ? rgba(i) : rgba(iBelow),
 
-                        (pixelColumn < rowWidth - 4) ? rgba(i + 4) : rgba(i),
+              lastRow ?
+                ((pixelColumn < rowWidth - 4) ? rgba(i + 4) : rgba(i)) :
+                ((pixelColumn < rowWidth - 4) ? rgba(iBelow + 4) : rgba(iBelow))
+            ]
+          );
 
-                        // The row of pixels below the current one.
-                        lastRow ?
-                            (pixelColumn ? rgba(i - 4) : rgba(i)) :
-                            (pixelColumn ? rgba(iBelow - 4) : rgba(iBelow)),
-
-                        lastRow ? rgba(i) : rgba(iBelow),
-
-                        lastRow ?
-                            ((pixelColumn < rowWidth - 4) ? rgba(i + 4) : rgba(i)) :
-                            ((pixelColumn < rowWidth - 4) ? rgba(iBelow + 4) : rgba(iBelow))
-                    ]
-                );
-
-            // Apply the color that is returned by the filter.
-            for (var j = 0; j < 4; j += 1) {
-                destinationArray[i + j] = pixel[j];
-            }
-        }
-
-        return result;
+      // Apply the color that is returned by the filter.
+      for (var j = 0; j < 4; j += 1) {
+          destinationArray[i + j] = pixel[j];
+      }
     }
+    return result;
+  },
+
+   /*
+   * A basic "darkener"---this one does not even use the entire pixel neighborhood;
+   * just the exact current pixel like the original Nanoshop.
+   */
+  neighborDarkener: function (x, y, rgbaNeighborhood) {
+    return [
+      rgbaNeighborhood[4].r / 2,
+      rgbaNeighborhood[4].g / 2,
+      rgbaNeighborhood[4].b / 2,
+      rgbaNeighborhood[4].a
+    ];
+  },
+
+  /*
+   * A basic "averager"---this one returns the average of all the pixels in the
+   * given neighborhood.
+   */
+  neighborAverager: function (x, y, rgbaNeighborhood) {
+    var rTotal = 0,
+        gTotal = 0,
+        bTotal = 0,
+        aTotal = 0,
+        i;
+
+    for (i = 0; i < 9; i += 1) {
+      rTotal += rgbaNeighborhood[i].r;
+      gTotal += rgbaNeighborhood[i].g;
+      bTotal += rgbaNeighborhood[i].b;
+      aTotal += rgbaNeighborhood[i].a;
+    }
+
+    return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
+  },
+
+  neighborMaximum: function (x,y, rgbaNeighborhood) {
+    var rTotal = 0,
+        gTotal = 0,
+        bTotal = 0,
+        i;
+
+    for (i = 0; i < 9; i += 1) {
+        rTotal = Math.max(rTotal, rgbaNeighborhood[i].r) * Math.random();
+        gTotal = Math.max(gTotal, rgbaNeighborhood[i].g) * Math.random();
+        bTotal = Math.max(bTotal, rgbaNeighborhood[i].b) * Math.random();
+    }
+    return [rTotal, gTotal, bTotal, rgbaNeighborhood[4].a];
+  },
+
+  neighborDifference: function (x, y, rgbaNeighborhood) {
+    var rTotal = 0,
+        gTotal = 0,
+        bTotal = 0,
+        i;
+
+    for (i = 0; i < 8; i += 1) {
+      rTotal += rgbaNeighborhood[i + 1].r - rgbaNeighborhood[i].r;
+      gTotal += rgbaNeighborhood[i + 1].g - rgbaNeighborhood[i].g;
+      bTotal += rgbaNeighborhood[i + 1].b - rgbaNeighborhood[i].b;
+    }
+
+    return [ rTotal, gTotal, bTotal, rgbaNeighborhood[4].a];
+  }
 };
