@@ -276,20 +276,53 @@ var Primitives = {
    * permutations of that eighth's coordinates.  So we define a helper
    * function that all of the circle implementations will use...
    */
-  plotCirclePoints: function (context, xc, yc, x, y, color) {
-    color = color || [0, 0, 0];
-    this.setPixel(context, xc + x, yc + y, color[0], color[1], color[2]);
-    this.setPixel(context, xc + x, yc - y, color[0], color[1], color[2]);
-    this.setPixel(context, xc + y, yc + x, color[0], color[1], color[2]);
-    this.setPixel(context, xc + y, yc - x, color[0], color[1], color[2]);
-    this.setPixel(context, xc - x, yc + y, color[0], color[1], color[2]);
-    this.setPixel(context, xc - x, yc - y, color[0], color[1], color[2]);
-    this.setPixel(context, xc - y, yc + x, color[0], color[1], color[2]);
-    this.setPixel(context, xc - y, yc - x, color[0], color[1], color[2]);
+  plotCirclePoints: function (context, xc, yc, x, y, r, outerColor, innerColor) {
+    var color = [0,0,0];
+
+    outerColor = outerColor || [0, 0, 0];
+    innerColor = innerColor || [0, 0, 0];
+    difference = [outerColor[0]-innerColor[0],
+                    outerColor[1]-innerColor[1],
+                    outerColor[2]-innerColor[2]];
+
+    var distance = function (x, y) {
+      return Math.sqrt((x -xc)^2 + (y - yc)^2);
+    };
+
+
+    this.setPixel(context, xc, yc, innerColor[0], innerColor[1], innerColor[2]);
+  
+    for (var i = 0; i < x; i++) {
+
+      percent = Math.sqrt(i * i +y * y) / r;
+
+      for (var j = 0; j < 3; j ++) {
+        color[j] = (percent * (innerColor[j] - outerColor[j])) + outerColor[j];
+      }
+
+      this.setPixel(context, xc + i, yc + y, color[0], color[1], color[2]);
+      this.setPixel(context, xc + i, yc - y, color[0], color[1], color[2]);
+      this.setPixel(context, xc - i, yc + y, color[0], color[1], color[2]);
+      this.setPixel(context, xc - i, yc - y, color[0], color[1], color[2]);
+    }
+
+    for (var i = 0; i < y; i++) {
+
+      percent = Math.sqrt(i * i + y * y) / r;
+
+      for (var j = 0; j < 3; j ++) {
+        color[j] = (percent * (innerColor[j] - outerColor[j])) + outerColor[j];
+      }
+
+      this.setPixel(context, xc + i, yc + x, color[0], color[1], color[2]);
+      this.setPixel(context, xc + i, yc - x, color[0], color[1], color[2]);
+      this.setPixel(context, xc - i, yc + x, color[0], color[1], color[2]);
+      this.setPixel(context, xc - i, yc - x, color[0], color[1], color[2]);
+    }
   },
 
   // First, the most naive possible implementation: circle by trigonometry.
-  circleTrig: function (context, xc, yc, r, color) {
+  circleTrig: function (context, xc, yc, r, innerColor, outerColor) {
     var theta = 1 / r,
       // At the very least, we compute our sine and cosine just once.
       s = Math.sin(theta),
@@ -300,33 +333,33 @@ var Primitives = {
       y = 0;
 
     while (x >= y) {
-      this.plotCirclePoints(context, xc, yc, x, y, color);
+      this.plotCirclePoints(context, xc, yc, x, y, r, innerColor, outerColor);
       x = x * c - y * s;
       y = x * s + y * c;
     }
   },
 
   // Now DDA.
-  circleDDA: function (context, xc, yc, r, color) {
+  circleDDA: function (context, xc, yc, r, innerColor, outerColor) {
     var epsilon = 1 / r,
         x = r,
         y = 0;
 
     while (x >= y) {
-      this.plotCirclePoints(context, xc, yc, x, y, color);
+      this.plotCirclePoints(context, xc, yc, x, y, r, innerColor, outerColor);
       x = x - (epsilon * y);
       y = y + (epsilon * x);
     }
   },
 
   // One of three Bresenham-like approaches.
-  circleBres1: function (context, xc, yc, r, color) {
+  circleBres1: function (context, xc, yc, r, innerColor, outerColor) {
     var p = 3 - 2 * r,
         x = 0,
         y = r;
 
     while (x < y) {
-      this.plotCirclePoints(context, xc, yc, x, y, color);
+      this.plotCirclePoints(context, xc, yc, x, y, r, innerColor, outerColor);
       if (p < 0) {
           p = p + 4 * x + 6;
       } else {
@@ -336,12 +369,12 @@ var Primitives = {
       x += 1;
     }
     if (x === y) {
-      this.plotCirclePoints(context, xc, yc, x, y, color);
+      this.plotCirclePoints(context, xc, yc, x, y, r, innerColor, outerColor);
     }
   },
 
   // And another...
-  circleBres2: function (context, xc, yc, r, color) {
+  circleBres2: function (context, xc, yc, r, innerColor, outerColor) {
     var x = 0,
         y = r,
         e = 1 - r,
@@ -349,7 +382,7 @@ var Primitives = {
         v = e - r;
 
     while (x <= y) {
-      this.plotCirclePoints(context, xc, yc, x, y, color);
+      this.plotCirclePoints(context, xc, yc, x, y, r, innerColor, outerColor);
 
       if (e < 0) {
         x += 1;
@@ -368,13 +401,13 @@ var Primitives = {
   },
 
   // Last but not least...
-  circleBres3: function (context, xc, yc, r, color) {
+  circleBres3: function (context, xc, yc, r, innerColor, outerColor) {
     var x = r,
         y = 0,
         e = 0;
 
     while (y <= x) {
-      this.plotCirclePoints(context, xc, yc, x, y, color);
+      this.plotCirclePoints(context, xc, yc, x, y, r, innerColor, outerColor);
       y += 1;
       e += (2 * y - 1);
       if (e > x) {
