@@ -289,9 +289,18 @@ var Primitives = {
       return Math.sqrt((x -xc)^2 + (y - yc)^2);
     };
 
+    var newR = function (x, y) {
+      return innerColor[0] + (difference[0] / r) * distance(x,y);
+    };
+    
+    var newG = function (x, y) {
+      return innerColor[1] + (difference[1] / r) * distance(x,y);
+    }; 
 
-    this.setPixel(context, xc, yc, innerColor[0], innerColor[1], innerColor[2]);
-  
+    var newB = function (x, y) {
+      return innerColor[2] + (difference[2] / r) * distance(x,y);
+    }; 
+
     for (var i = 0; i < x; i++) {
 
       percent = Math.sqrt(i * i +y * y) / r;
@@ -308,7 +317,7 @@ var Primitives = {
 
     for (var i = 0; i < y; i++) {
 
-      percent = Math.sqrt(i * i + y * y) / r;
+      percent = Math.sqrt(i * i + x * x) / r;
 
       for (var j = 0; j < 3; j ++) {
         color[j] = (percent * (innerColor[j] - outerColor[j])) + outerColor[j];
