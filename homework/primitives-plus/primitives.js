@@ -309,10 +309,10 @@ var Primitives = {
         color[j] = (percent * (innerColor[j] - outerColor[j])) + outerColor[j];
       }
 
-      this.setPixel(context, xc + i, yc + y, color[0], color[1], color[2]);
-      this.setPixel(context, xc + i, yc - y, color[0], color[1], color[2]);
-      this.setPixel(context, xc - i, yc + y, color[0], color[1], color[2]);
-      this.setPixel(context, xc - i, yc - y, color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + y), color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - y), color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + y), color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - y), color[0], color[1], color[2]);
     }
 
     for (var i = 0; i < y; i++) {
@@ -323,10 +323,10 @@ var Primitives = {
         color[j] = (percent * (innerColor[j] - outerColor[j])) + outerColor[j];
       }
 
-      this.setPixel(context, xc + i, yc + x, color[0], color[1], color[2]);
-      this.setPixel(context, xc + i, yc - x, color[0], color[1], color[2]);
-      this.setPixel(context, xc - i, yc + x, color[0], color[1], color[2]);
-      this.setPixel(context, xc - i, yc - x, color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + x), color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - x), color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + x), color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - x), color[0], color[1], color[2]);
     }
   },
 
