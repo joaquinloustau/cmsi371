@@ -276,8 +276,11 @@ var Primitives = {
    * permutations of that eighth's coordinates.  So we define a helper
    * function that all of the circle implementations will use...
    */
-  plotCirclePoints: function (context, xc, yc, x, y, r, outerColor, innerColor) {
-    var color = [0,0,0];
+
+  // Credit to Cameron Billingham for helping me understand the one-eighth of the circle principle.
+
+  plotCirclePoints: function (context, xc, yc, x, y, r, innerColor, outerColor) {
+    var newcolor = [0,0,0];
 
     outerColor = outerColor || [0, 0, 0];
     innerColor = innerColor || [0, 0, 0];
@@ -285,48 +288,37 @@ var Primitives = {
                     outerColor[1]-innerColor[1],
                     outerColor[2]-innerColor[2]];
 
-    var distance = function (x, y) {
-      return Math.sqrt((x -xc)^2 + (y - yc)^2);
+    var pythagoras = function (a, b) {
+      return Math.sqrt(a * a + b * b);
     };
+  
+    for (var i = 0; i < y; i++) {
 
-    var newR = function (x, y) {
-      return innerColor[0] + (difference[0] / r) * distance(x,y);
-    };
-    
-    var newG = function (x, y) {
-      return innerColor[1] + (difference[1] / r) * distance(x,y);
-    }; 
+      gradientRadio = pythagoras(x, i) / r;
 
-    var newB = function (x, y) {
-      return innerColor[2] + (difference[2] / r) * distance(x,y);
-    }; 
+      for (var j = 0; j < 3; j ++) {
+        newcolor[j] = gradientRadio * difference[j] + innerColor[j];
+      }
+
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + x), newcolor[0], newcolor[1], newcolor[2]);
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - x), newcolor[0], newcolor[1], newcolor[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + x), newcolor[0], newcolor[1], newcolor[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - x), newcolor[0], newcolor[1], newcolor[2]);
+    }
 
     for (var i = 0; i < x; i++) {
 
-      percent = Math.sqrt(i * i +y * y) / r;
+      gradientRadio = pythagoras(i, y) / r;
 
       for (var j = 0; j < 3; j ++) {
-        color[j] = (percent * (innerColor[j] - outerColor[j])) + outerColor[j];
+
+        newcolor[j] = gradientRadio * difference[j] + innerColor[j];
       }
 
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + y), color[0], color[1], color[2]);
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - y), color[0], color[1], color[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + y), color[0], color[1], color[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - y), color[0], color[1], color[2]);
-    }
-
-    for (var i = 0; i < y; i++) {
-
-      percent = Math.sqrt(i * i + x * x) / r;
-
-      for (var j = 0; j < 3; j ++) {
-        color[j] = (percent * (innerColor[j] - outerColor[j])) + outerColor[j];
-      }
-
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + x), color[0], color[1], color[2]);
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - x), color[0], color[1], color[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + x), color[0], color[1], color[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - x), color[0], color[1], color[2]);
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + y), newcolor[0], newcolor[1], newcolor[2]);
+      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - y), newcolor[0], newcolor[1], newcolor[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + y), newcolor[0], newcolor[1], newcolor[2]);
+      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - y), newcolor[0], newcolor[1], newcolor[2]);
     }
   },
 
