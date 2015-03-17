@@ -10,7 +10,7 @@
 
   // First, a selection of "drawing functions" from which we can choose.
   background = function (renderingContext) {
-    var img = new Image();
+    var img = new Image(); // JD: 1
     img.src = "grass-and-sky-wallpaper-10.jpg"; // Set source path
     renderingContext.drawImage(img, 0, 0, canvas.width, canvas.height);
   },
@@ -41,6 +41,7 @@
           tx: startTx,
           ty: startTy - 100 * i,
           radius: 35,
+          // JD: 5
           darkColor: '#'+('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6),
           lightColor: '#'+('00000'+(Math.random()*16777216<<0).toString(16)).substr(-6),
 
@@ -105,7 +106,7 @@
           frame: 850,
           tx: 350,
           ty: 600,
-          eyesize: 4,
+          eyesize: 4, // JD: 4
           numberOfTeeth: 6,
           ease: KeyframeTweener.inQuintic,
 
