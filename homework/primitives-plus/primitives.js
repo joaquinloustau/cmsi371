@@ -280,15 +280,15 @@ var Primitives = {
   // Credit to Cameron Billingham for helping me understand the one-eighth of the circle principle.
 
   plotCirclePoints: function (context, xc, yc, x, y, r, innerColor, outerColor) {
-    var newcolor = [0,0,0];
+    var newcolor = [0,0,0]; // JD: 1
 
     outerColor = outerColor || [0, 0, 0];
     innerColor = innerColor || [0, 0, 0];
-    difference = [outerColor[0]-innerColor[0],
+    difference = [outerColor[0]-innerColor[0], // JD: 6
                     outerColor[1]-innerColor[1],
                     outerColor[2]-innerColor[2]];
 
-    var pythagoras = function (a, b) {
+    var pythagoras = function (a, b) { // JD: 7
       return Math.sqrt(a * a + b * b);
     };
   
@@ -307,7 +307,7 @@ var Primitives = {
     }
 
     for (var i = 0; i < x; i++) {
-
+      // JD: 8
       gradientRadio = pythagoras(i, y) / r;
 
       for (var j = 0; j < 3; j ++) {

@@ -35,13 +35,27 @@ var Nanoshop = {
     return [r / 2, g / 2, b / 2, a];
   },
 
-  grayScaler: function (r,g,b,a) {
-    var grayscaleValue = 0.21 * r + 0.72 * g + 0.07 * b;
+  grayScaler: function (r,g,b,a) { // JD: 1
+    var grayscaleValue = 0.21 * r + 0.72 * g + 0.07 * b; // JD: 2
     // Credit for luminosity formula: http://www.johndcook.com/blog/2009/08/24/algorithms-convert-color-grayscale/
     return [grayscaleValue, grayscaleValue, grayscaleValue, a];
   },
 
   sepia: function (r,g,b,a) {
+    // JD: 3...compare to:
+    /*
+
+    var outputRed = (r * .393) + (g *.769) + (b * .189);
+    var outputGreen = (r * .349) + (g *.686) + (b * .168);
+    var outputBlue = (r * .272) + (g *.534) + (b * .131);
+    var clampTo255 = function (colorComponent) {
+          return colorComponent > 255 ? 255 : colorComponent;
+        };
+
+    return [ clampTo255(outputRed), clampTo255(outputGreen), clampTo255(outputBlue), a];
+
+    */
+    // ^^^^^ No repeated computations, no repeated code.
     var outputRed = (r * .393) + (g *.769) + (b * .189) < 255 ? (r * .393) + (g *.769) + (b * .189) : 255;
     var outputGreen = (r * .349) + (g *.686) + (b * .168) < 255 ? (r * .349) + (g *.686) + (b * .168) : 255;
     var outputBlue = (r * .272) + (g *.534) + (b * .131) < 255 ? (r * .272) + (g *.534) + (b * .131) : 255;

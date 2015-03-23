@@ -138,7 +138,7 @@ var NanoshopNeighborhood = {
         i;
 
     for (i = 0; i < 8; i += 1) {
-      rTotal += rgbaNeighborhood[i + 1].r - rgbaNeighborhood[i].r;
+      rTotal += rgbaNeighborhood[i + 1].r - rgbaNeighborhood[i].r; // JD: 6
       gTotal += rgbaNeighborhood[i + 1].g - rgbaNeighborhood[i].g;
       bTotal += rgbaNeighborhood[i + 1].b - rgbaNeighborhood[i].b;
     }
