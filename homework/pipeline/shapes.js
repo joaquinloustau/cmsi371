@@ -53,6 +53,40 @@ var Shapes = {
     };
   },
 
+  cube: function () {
+        var X = 0.5,
+            Y = 0.5,
+            Z = 0.5;
+
+    return {
+      vertices: [
+        [X, Y, Z],
+        [X, Y, -Z],
+        [X, -Y, Z],
+        [X, -Y, -Z],
+        [-X, Y, Z],
+        [-X, Y, -Z],
+        [-X, -Y, Z],
+        [-X, -Y, -Z]
+      ],
+
+      indices: [
+        [0, 1, 3],
+        [2, 0, 3],
+        [7, 2, 3],
+        [6, 7, 2],
+        [4, 0, 2],
+        [6, 4, 2],
+        [5, 1, 7],
+        [1, 3, 7],
+        [4, 5, 7],
+        [6, 4, 7],
+        [4, 5, 0],
+        [5, 1, 0]
+      ]
+    };
+  },
+
   //Used learningwebgl.com Lesson 11 – spheres, rotation matrices, and mouse events
   sphere: function () {
         var radius = 0.8,
