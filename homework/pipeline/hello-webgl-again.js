@@ -19,8 +19,8 @@
         abort = false,
 
         // Important state variables.
-        animationActive = false,
         currentRotation = 0.0,
+        currentInterval,
         rotationMatrix,
         vertexPosition,
         vertexColor,
@@ -171,9 +171,15 @@
 
         {
             color: { r: 0.0, g: 0.5, b: 0.0 },
-            vertices: Shape.toRawLineArray(Shape.icosahedron()),
+            vertices: Shapes.toRawLineArray(Shapes.icosahedron()),
             mode: gl.LINES
-        }
+        },
+
+        {
+            color: { r: 0.0, g: 0.5, b: 0.0 },
+            vertices: Shapes.toRawLineArray(Shapes.sphere()),
+            mode: gl.LINES
+        } 
     ];
 
     // Pass the vertices to WebGL.
@@ -265,43 +271,6 @@
 
         // All done.
         gl.flush();
-    },
-
-    /*
-     * Animates the scene.
-     */
-    previousTimestamp = null,
-    advanceScene = function (timestamp) {
-        // Check if the user has turned things off.
-        if (!animationActive) {
-            return;
-        }
-
-        // Initialize the timestamp.
-        if (!previousTimestamp) {
-            previousTimestamp = timestamp;
-            window.requestAnimationFrame(advanceScene);
-            return;
-        }
-
-        // Check if it's time to advance.
-        var progress = timestamp - previousTimestamp;
-        if (progress < 30) {
-            // Do nothing if it's too soon.
-            window.requestAnimationFrame(advanceScene);
-            return;
-        }
-
-        // All clear.
-        currentRotation += 0.033 * progress;
-        drawScene();
-        if (currentRotation >= 360.0) {
-            currentRotation -= 360.0;
-        }
-
-        // Request the next frame.
-        previousTimestamp = timestamp;
-        window.requestAnimationFrame(advanceScene);
     };
 
     // Draw the initial scene.
@@ -309,10 +278,17 @@
 
     // Set up the rotation toggle: clicking on the canvas does it.
     $(canvas).click(function () {
-        animationActive = !animationActive;
-        if (animationActive) {
-            previousTimestamp = null;
-            window.requestAnimationFrame(advanceScene);
+        if (currentInterval) {
+            clearInterval(currentInterval);
+            currentInterval = null;
+        } else {
+            currentInterval = setInterval(function () {
+                currentRotation += 1.0;
+                drawScene();
+                if (currentRotation >= 360.0) {
+                    currentRotation -= 360.0;
+                }
+            }, 30);
         }
     });
 

@@ -7,7 +7,7 @@ var Shapes = {
   /*
    * Returns the vertices for a small icosahedron.
    */
-  this.icosahedron = function () {
+  icosahedron: function () {
     // These variables are actually "constants" for icosahedron coordinates.
     var X = 0.525731112119133606,
         Z = 0.850650808352039932;
@@ -51,13 +51,65 @@ var Shapes = {
         [ 11, 2, 7 ]
       ]
     };
-  };
+  },
+
+  //Used learningwebgl.com Lesson 11 – spheres, rotation matrices, and mouse events
+  sphere: function () {
+        var radius = 0.8,
+            theta,
+            sinTheta,
+            cosTheta,
+            phi,
+            latBelts = 25,
+            longBelts = 25,
+            vertices = [],
+            indices = [],
+            top,
+            bottom,
+            x,
+            y,
+            z,
+            i,
+            j,
+            sphereData = {};
+
+        // This creates the vertices for the circle.
+        for (i = 0; i < latBelts + 1; i += 1) {
+            theta = (i * Math.PI) / latBelts;
+            sinTheta = Math.sin(theta);
+            cosTheta = Math.cos(theta);
+
+            for (j = 0; j < longBelts + 1; j += 1) {
+                phi = (j * 2 * Math.PI) / longBelts;
+                x = radius * Math.cos(phi) * sinTheta;
+                y = radius * cosTheta;
+                z = radius * Math.sin(phi) * sinTheta;
+
+                vertices.push([x, y, z]);
+            }
+        }
+
+        // This creates the indices for the circle.
+        for (i = 0; i < latBelts + 1; i += 1) {
+            for (j = 0; j < longBelts + 1; j += 1) {
+                top = (i * (longBelts + 1)) + j;
+                bottom = top + longBelts + 1;
+
+                indices.push([top, bottom, top + 1]);
+                indices.push([bottom, bottom + 1, top + 1]);
+            }
+        }
+
+        sphereData.vertices = vertices;
+        sphereData.indices = indices;
+        return sphereData;
+    },
 
   /*
    * Utility function for turning indexed vertices into a "raw" coordinate array
    * arranged as triangles.
    */
-  shape.prototype.toRawTriangleArray = function (indexedVertices) {
+  toRawTriangleArray: function (indexedVertices) {
     var result = [],
         i,
         j,
@@ -74,14 +126,14 @@ var Shapes = {
       }
     }
     return result;
-  };
+  },
 
   /*
    * Utility function for turning indexed vertices into a "raw" coordinate array
    * arranged as line segments.
    */
 
-  shape.prototype.toRawLineArray = function (indexedVertices) {
+  toRawLineArray: function (indexedVertices) {
     var result = [],
         i,
         j,
@@ -102,7 +154,5 @@ var Shapes = {
       }
     }
     return result;
-  };
-
-  return shape;
+  }
 };
