@@ -76,12 +76,29 @@ var Matrix3D = (function () {
             matrixResult[15]
         );
     };
+
+    //http://myweb.lmu.edu/dondi/share/cg/transforms-v02.pdf
+    matrix3D.getScaleMatrix = function (sx, sy, sz) {
+        return new Matrix4x4(
+            sx, 0, 0, 0,
+            0, sy, 0, 0,
+            0, 0, sz, 0,
+            0, 0, 0, 1
+        );
+    };
+
+    //http://myweb.lmu.edu/dondi/share/cg/transforms-v02.pdf
+    matrix3D.getTranslationMatrix4x4 = function (tx, ty, tz) {
+    return new Matrix4x4(
+        1, 0, 0, tx,
+        0, 1, 0, ty,
+        0, 0, 1, tz,
+        0, 0, 0, 1
+        );
+    };
+
+
     /*
-     * This code does not really belong here: it should live
-     * in a separate library of matrix and transformation
-     * functions.  It is here only to show you how matrices
-     * can be used with GLSL.
-     *
      * Based on the original glRotate reference:
      *     http://www.opengl.org/sdk/docs/man/xhtml/glRotate.xml
      */
