@@ -139,6 +139,35 @@ var Shapes = {
         return sphereData;
     },
 
+     triangularPrism: function () {
+        // These variables are actually "constants" for trangular prism coordinates.
+        var X = 0.75,
+            Y = 0.5,
+            Z = -0.75;
+
+        return {
+            vertices: [
+                [ X, 0.0, Z ],
+                [ -X, 0.0, Z ],
+                [ 0.0, Y, Z ],
+                [ X, 0.0, -Z ],
+                [ -X, 0.0, -Z ],
+                [ 0.0, Y, -Z ]
+            ],
+
+            indices: [
+                [ 0, 1, 2 ],
+                [ 0, 2, 3 ], //Rectangle
+                [ 3, 2, 5 ],
+                [ 3, 5, 4 ],
+                [ 4, 5, 1 ],  // Rectangle
+                [ 1, 5, 2 ],
+                [ 0, 3, 1 ], // Rectangle, bottom
+                [ 4, 3, 1 ]
+            ]
+        };
+    },
+
   /*
    * Utility function for turning indexed vertices into a "raw" coordinate array
    * arranged as triangles.
