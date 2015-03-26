@@ -121,8 +121,8 @@ var Matrix3D = (function () {
         ys = y * s;
         zs = z * s;
 
-        // GL expects its matrices in column major order.
-        return [
+        // Return result matrix.
+        return new Matrix3D(
             (x2 * oneMinusC) + c,
             (xy * oneMinusC) + zs,
             (xz * oneMinusC) - ys,
@@ -142,7 +142,7 @@ var Matrix3D = (function () {
             0.0,
             0.0,
             1.0
-        ];
+        );
     },
 
     
