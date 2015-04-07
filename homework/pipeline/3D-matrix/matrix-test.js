@@ -53,4 +53,28 @@ $(function () {
                             -6, -2, 2, 6],
               "Multiplication by random Matrix")
   });
+
+  test("Matrix translation", function () {
+    var m5 = Matrix3D.getTranslationMatrix(4, -8, 7);
+    deepEqual(m5.elements, [1, 0, 0, 4,
+                            0, 1, 0, -8,
+                            0, 0, 1, 7,
+                            0, 0, 0, 1],
+              "Translation Test #1")
+
+    var m6 = Matrix3D.getTranslationMatrix(0, 0, 0);
+    deepEqual(m6.elements, [1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1],
+              "Translation Test #2")
+
+    var m7 = Matrix3D.getTranslationMatrix(.5, -4, 8);
+    deepEqual(m7.elements, [1, 0, 0, 0.5,
+                            0, 1, 0, -4,
+                            0, 0, 1, 8,
+                            0, 0, 0, 1],
+              "Translation Test #3")
+
+  })
 });
