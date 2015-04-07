@@ -18,6 +18,7 @@ var Matrix3D = (function () {
 
     matrixResult[0] = this.elements[0] * matrix2[0] + this.elements[1] *
       matrix2[4] + this.elements[2] * matrix2[8] + this.elements[3] * matrix2[12];
+    console.log(matrix2[0]);
     matrixResult[1] = this.elements[0] * matrix2[1] + this.elements[1] *
       matrix2[5] + this.elements[2] * matrix2[9] + this.elements[3] * matrix2[13];
     matrixResult[2] = this.elements[0] * matrix2[2] + this.elements[1] *
