@@ -53,7 +53,7 @@ $(function () {
               "Multiplication by random Matrix")
   });
 
-  test("Matrix translation", function () {
+  test("Matrix Translation", function () {
     var m3 = Matrix3D.getTranslationMatrix(4, -8, 7);
     deepEqual(m3.elements, [1, 0, 0, 4,
                             0, 1, 0, -8,
@@ -197,6 +197,35 @@ $(function () {
   })
   
   test("Matrix Perspective Projection", function () {
-    var m7 = Matrix3D.getFrustrumMatrix()
+    var m7 = Matrix3D.getFrustumMatrix(-4, 4, -2, 2, -10, 10);
+        width = 4 + 4;
+        height = 2 + 2;
+        depth = 10 + 10;
+        
+    deepEqual(m7.elements, [2 * -10 / width, 0, 0, 0,
+                            0, -5, 0, 0,
+                            0, 0, 0, 10,
+                            0, 0, -1, 0],
+              "Perspective Projection Test #1");
+
+    m7 = Matrix3D.getFrustumMatrix(-1, 1, -1, 1, -1, 1);
+    width = 1 + 1;
+    height = 1 + 1;
+    depth = 1 + 1;
+    deepEqual(m7.elements, [-1, 0, 0, 0,
+                            0, -1, 0, 0,
+                            0, 0, 0, 1,
+                            0, 0, -1, 0],
+              "Perspective Projection Test #2");
+
+    m7 = Matrix3D.getFrustumMatrix(0, 1, 0, 1, 0, 1);
+    width = 1;
+    height = 1;
+    depth = 1;
+    deepEqual(m7.elements, [0, 0, 1, 0,
+                            0, 0, 1, 0,
+                            0, 0, -1, 0,
+                            0, 0, -1, 0],
+              "Perspective Projection Test #3");
   })
 });

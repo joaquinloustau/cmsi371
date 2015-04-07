@@ -54,9 +54,9 @@ var Shapes = {
   },
 
   cube: function () {
-        var X = 0.5,
-            Y = 0.5,
-            Z = 0.5;
+    var X = 0.5,
+        Y = 0.5,
+        Z = 0.5;
 
     return {
       vertices: [
@@ -89,84 +89,84 @@ var Shapes = {
 
   //Used learningwebgl.com Lesson 11 – spheres, rotation matrices, and mouse events
   sphere: function () {
-        var radius = 0.8,
-            theta,
-            sinTheta,
-            cosTheta,
-            phi,
-            latBelts = 25,
-            longBelts = 25,
-            vertices = [],
-            indices = [],
-            top,
-            bottom,
-            x,
-            y,
-            z,
-            i,
-            j,
-            sphereData = {};
+    var radius = 0.8,
+        theta,
+        sinTheta,
+        cosTheta,
+        phi,
+        latBelts = 25,
+        longBelts = 25,
+        vertices = [],
+        indices = [],
+        top,
+        bottom,
+        x,
+        y,
+        z,
+        i,
+        j,
+        sphereData = {};
 
-        // This creates the vertices for the circle.
-        for (i = 0; i < latBelts + 1; i += 1) {
-            theta = (i * Math.PI) / latBelts;
-            sinTheta = Math.sin(theta);
-            cosTheta = Math.cos(theta);
+    // This creates the vertices for the circle.
+    for (i = 0; i < latBelts + 1; i += 1) {
+        theta = (i * Math.PI) / latBelts;
+        sinTheta = Math.sin(theta);
+        cosTheta = Math.cos(theta);
 
-            for (j = 0; j < longBelts + 1; j += 1) {
-                phi = (j * 2 * Math.PI) / longBelts;
-                x = radius * Math.cos(phi) * sinTheta;
-                y = radius * cosTheta;
-                z = radius * Math.sin(phi) * sinTheta;
+        for (j = 0; j < longBelts + 1; j += 1) {
+            phi = (j * 2 * Math.PI) / longBelts;
+            x = radius * Math.cos(phi) * sinTheta;
+            y = radius * cosTheta;
+            z = radius * Math.sin(phi) * sinTheta;
 
-                vertices.push([x, y, z]);
-            }
+            vertices.push([x, y, z]);
         }
+    }
 
-        // This creates the indices for the circle.
-        for (i = 0; i < latBelts + 1; i += 1) {
-            for (j = 0; j < longBelts + 1; j += 1) {
-                top = (i * (longBelts + 1)) + j;
-                bottom = top + longBelts + 1;
+    // This creates the indices for the circle.
+    for (i = 0; i < latBelts + 1; i += 1) {
+        for (j = 0; j < longBelts + 1; j += 1) {
+            top = (i * (longBelts + 1)) + j;
+            bottom = top + longBelts + 1;
 
-                indices.push([top, bottom, top + 1]);
-                indices.push([bottom, bottom + 1, top + 1]);
-            }
+            indices.push([top, bottom, top + 1]);
+            indices.push([bottom, bottom + 1, top + 1]);
         }
+    }
 
-        sphereData.vertices = vertices;
-        sphereData.indices = indices;
-        return sphereData;
-    },
+    sphereData.vertices = vertices;
+    sphereData.indices = indices;
+    return sphereData;
+  },
 
-     triangularPrism: function () {
-        // These variables are actually "constants" for trangular prism coordinates.
-        var X = 0.75,
-            Y = 0.5,
-            Z = -0.75;
+  triangularPrism: function () {
+    // These variables are actually "constants" for trangular prism coordinates.
+    var X = 0.75,
+        Y = 0.5,
+        Z = -0.75;
 
-        return {
-            vertices: [
-                [ X, 0.0, Z ],
-                [ -X, 0.0, Z ],
-                [ 0.0, Y, Z ],
-                [ X, 0.0, -Z ],
-                [ -X, 0.0, -Z ],
-                [ 0.0, Y, -Z ]
-            ],
+    return {
+      vertices: [
+          [ X, 0.0, Z ],
+          [ -X, 0.0, Z ],
+          [ 0.0, Y, Z ],
+          [ X, 0.0, -Z ],
+          [ -X, 0.0, -Z ],
+          [ 0.0, Y, -Z ]
+      ],
 
-            indices: [
-                [ 0, 1, 2 ],
-                [ 0, 2, 3 ], //Rectangle
-                [ 3, 2, 5 ],
-                [ 3, 5, 4 ],
-                [ 4, 5, 1 ],  // Rectangle
-                [ 1, 5, 2 ],
-                [ 0, 3, 1 ], // Rectangle, bottom
-                [ 4, 3, 1 ]
-            ]
-        };
-    },
+      indices: [
+          [ 0, 1, 2 ],
+          [ 0, 2, 3 ], //Rectangle
+          [ 3, 2, 5 ],
+          [ 3, 5, 4 ],
+          [ 4, 5, 1 ],  // Rectangle
+          [ 1, 5, 2 ],
+          [ 0, 3, 1 ], // Rectangle, bottom
+          [ 4, 3, 1 ]
+      ]
+    };
+  },
 
   /*
    * Utility function for turning indexed vertices into a "raw" coordinate array
