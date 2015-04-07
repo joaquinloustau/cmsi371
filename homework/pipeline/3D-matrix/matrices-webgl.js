@@ -4,15 +4,13 @@
  */
 var Matrix3D = (function () {
   // Define the constructor.
-
   var matrix3D = function () {
     this.elements = arguments.length ? [].slice.call(arguments) :
-    // identity matrix
-    [1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1];
-
+                    // identity matrix
+                    [1, 0, 0, 0,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1];
   };
 
   matrix3D.prototype.multiplication = function (matrix2) {
@@ -79,7 +77,7 @@ var Matrix3D = (function () {
 
   //http://myweb.lmu.edu/dondi/share/cg/transforms-v02.pdf
   matrix3D.getTranslationMatrix = function (tx, ty, tz) {
-    return new Matrix4x4(
+    return new Matrix3D(
       1, 0, 0, tx,
       0, 1, 0, ty,
       0, 0, 1, tz,
@@ -90,7 +88,7 @@ var Matrix3D = (function () {
 
   //http://myweb.lmu.edu/dondi/share/cg/transforms-v02.pdf
   matrix3D.getScaleMatrix = function (sx, sy, sz) {
-    return new Matrix4x4(
+    return new Matrix3D(
       sx, 0, 0, 0,
       0, sy, 0, 0,
       0, 0, sz, 0,
@@ -160,15 +158,14 @@ var Matrix3D = (function () {
       0.0,
       1.0
     );
-  },
-
+  };
   
   matrix3D.getOrthoMatrix = function (left, right, bottom, top, zNear, zFar) {
     var width = right - left,
       height = top - bottom,
       depth = zFar - zNear;
 
-    return new Matrix3D()
+    return new Matrix3D(
       2.0 / width,
       0.0,
       0.0,
@@ -197,7 +194,7 @@ var Matrix3D = (function () {
       height = top - bottom,
       depth = zFar - zNear;
 
-    return new Matrix4x4(
+    return new Matrix3D(
       2.0 * zNear / width,
       0.0,
       (right + left) / width,
@@ -219,5 +216,6 @@ var Matrix3D = (function () {
       0.0
     );
   };
+
   return matrix3D;
 })();
