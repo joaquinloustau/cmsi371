@@ -9,8 +9,7 @@ var Primitives = {
    */
   setPixel: function (context, x, y, r, g, b) {
     context.save();
-    context.fillStyle = "rgb(" + parseInt(r, 10) + "," +
-      parseInt(g, 10) + "," + parseInt(b, 10) + ")";
+    context.fillStyle = "rgb(" + parseInt(r, 10) + "," + parseInt(g, 10) + "," + parseInt(b, 10) + ")";
     context.fillRect(x, y, 1, 1);
     context.restore();
   },
@@ -19,6 +18,7 @@ var Primitives = {
    * The easy fill case: rectangles.  We take advantage of JavaScript's
    * "optional" parameter mechanism to keep things at a single method.
    */
+
   fillRect: function (context, x, y, w, h, c1, c2, c3, c4) {
     var module = this,
         i,
@@ -65,9 +65,9 @@ var Primitives = {
       for (i = y; i < bottom; i += 1) {
         for (j = x; j < right; j += 1) {
           module.setPixel(context, j, i,
-                leftColor[0],
-                leftColor[1],
-                leftColor[2]);
+                          leftColor[0],
+                          leftColor[1],
+                          leftColor[2]);
         }
 
         // Move to the next level of the gradient.
@@ -280,46 +280,31 @@ var Primitives = {
   // Credit to Cameron Billingham for helping me understand the one-eighth of the circle principle.
 
   plotCirclePoints: function (context, xc, yc, x, y, r, innerColor, outerColor) {
-    var newcolor = [0,0,0]; // JD: 1
+    var newcolor = [0, 0, 0]; 
 
     outerColor = outerColor || [0, 0, 0];
     innerColor = innerColor || [0, 0, 0];
-    difference = [outerColor[0]-innerColor[0], // JD: 6
-                    outerColor[1]-innerColor[1],
-                    outerColor[2]-innerColor[2]];
+    difference = [outerColor[0] - innerColor[0],
+                  outerColor[1] - innerColor[1],
+                  outerColor[2] - innerColor[2]];
 
-    var pythagoras = function (a, b) { // JD: 7
-      return Math.sqrt(a * a + b * b);
-    };
+
+    var plotPoints = function (i, row) {
+
+      gradientRadio = Math.sqrt(row * row + i * i) / r;
+
+      for (var j = 0; j < 3; j ++) {
+        newcolor[j] = gradientRadio * difference[j] + innerColor[j];
+      }
+
+      Primitives.setPixel(context, Math.floor(xc + i), Math.floor(yc + row), newcolor[0], newcolor[1], newcolor[2]);
+      Primitives.setPixel(context, Math.floor(xc + i), Math.floor(yc - row), newcolor[0], newcolor[1], newcolor[2]);
+      Primitives.setPixel(context, Math.floor(xc - i), Math.floor(yc + row), newcolor[0], newcolor[1], newcolor[2]);
+      Primitives.setPixel(context, Math.floor(xc - i), Math.floor(yc - row), newcolor[0], newcolor[1], newcolor[2]);
+    }              
   
-    for (var i = 0; i < y; i++) {
-
-      gradientRadio = pythagoras(x, i) / r;
-
-      for (var j = 0; j < 3; j ++) {
-        newcolor[j] = gradientRadio * difference[j] + innerColor[j];
-      }
-
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + x), newcolor[0], newcolor[1], newcolor[2]);
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - x), newcolor[0], newcolor[1], newcolor[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + x), newcolor[0], newcolor[1], newcolor[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - x), newcolor[0], newcolor[1], newcolor[2]);
-    }
-
-    for (var i = 0; i < x; i++) {
-      // JD: 8
-      gradientRadio = pythagoras(i, y) / r;
-
-      for (var j = 0; j < 3; j ++) {
-
-        newcolor[j] = gradientRadio * difference[j] + innerColor[j];
-      }
-
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc + y), newcolor[0], newcolor[1], newcolor[2]);
-      this.setPixel(context, Math.floor(xc + i), Math.floor(yc - y), newcolor[0], newcolor[1], newcolor[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc + y), newcolor[0], newcolor[1], newcolor[2]);
-      this.setPixel(context, Math.floor(xc - i), Math.floor(yc - y), newcolor[0], newcolor[1], newcolor[2]);
-    }
+    for (var i = 0; i < y; i++) { plotPoints(i,x) }
+    for (var i = 0; i < x; i++) { plotPoints(i,y) }
   },
 
   // First, the most naive possible implementation: circle by trigonometry.

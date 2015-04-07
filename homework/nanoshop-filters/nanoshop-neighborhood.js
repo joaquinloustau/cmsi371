@@ -117,7 +117,7 @@ var NanoshopNeighborhood = {
     return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
   },
 
-  neighborMaximum: function (x,y, rgbaNeighborhood) {
+  neighborMaximum: function (x, y, rgbaNeighborhood) {
     var rTotal = 0,
         gTotal = 0,
         bTotal = 0,
@@ -138,7 +138,8 @@ var NanoshopNeighborhood = {
         i;
 
     for (i = 0; i < 8; i += 1) {
-      rTotal += rgbaNeighborhood[i + 1].r - rgbaNeighborhood[i].r; // JD: 6
+      rTotal += rgbaNeighborhood[i + 1].r - rgbaNeighborhood[i].r; //JD:6 <- I think this meant to be JD:5 
+      //I discovered it myself by experimenting and worked out fine.
       gTotal += rgbaNeighborhood[i + 1].g - rgbaNeighborhood[i].g;
       bTotal += rgbaNeighborhood[i + 1].b - rgbaNeighborhood[i].b;
     }
