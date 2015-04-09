@@ -3,7 +3,7 @@
  * The "shapes" are returned as indexed vertices, with utility functions for
  * converting these into "raw" coordinate arrays.
  */
-var Shapes = {
+var Shape = {
   /*
    * Returns the vertices for a small icosahedron.
    */
