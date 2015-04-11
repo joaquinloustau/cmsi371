@@ -3,17 +3,26 @@
  * The "shapes" are returned as indexed vertices, with utility functions for
  * converting these into "raw" coordinate arrays.
  */
-var Shape = {
+var Shape = (function () {
+
+  //Define the constructor
+  var shape = function (options) {
+    this.vertices = options.vertices || [];
+    this.indices = options.indices || [];
+    this.color = options.color || { r: 1.0, g: 0.0, b: 0.0 };
+    this.children = options.children || [];
+    this.mode = options.mode;
+  };
+
   /*
    * Returns the vertices for a small icosahedron.
    */
-  icosahedron: function () {
+  shape.icosahedron = function () {
     // These variables are actually "constants" for icosahedron coordinates.
     var X = 0.525731112119133606,
         Z = 0.850650808352039932;
-
-    return {
-      vertices: [
+ 
+    return new shape({vertices: [
         [ -X, 0.0, Z ],
         [ X, 0.0, Z ],
         [ -X, 0.0, -Z ],
@@ -50,15 +59,15 @@ var Shape = {
         [ 5, 2, 9 ],
         [ 11, 2, 7 ]
       ]
-    };
+    });
   },
 
-  cube: function () {
+  shape.cube = function () {
     var X = 0.5,
         Y = 0.5,
         Z = 0.5;
 
-    return {
+    return new shape({
       vertices: [
         [X, Y, Z],
         [X, Y, -Z],
@@ -84,11 +93,11 @@ var Shape = {
         [4, 5, 0],
         [5, 1, 0]
       ]
-    };
+    });
   },
 
   //Used learningwebgl.com Lesson 11 – spheres, rotation matrices, and mouse events
-  sphere: function () {
+  shape.sphere = function () {
     var radius = 0.8,
         theta,
         sinTheta,
@@ -135,17 +144,18 @@ var Shape = {
     }
 
     sphereData.vertices = vertices;
-    sphereData.indices = indices;
-    return sphereData;
+    sphereData.indices = indices
+
+    return new shape(sphereData);
   },
 
-  triangularPrism: function () {
+  shape.triangularPrism = function () {
     // These variables are actually "constants" for trangular prism coordinates.
     var X = 0.75,
         Y = 0.5,
         Z = -0.75;
 
-    return {
+    return  new shape({
       vertices: [
           [ X, 0.0, Z ],
           [ -X, 0.0, Z ],
@@ -165,25 +175,25 @@ var Shape = {
           [ 0, 3, 1 ], // Rectangle, bottom
           [ 4, 3, 1 ]
       ]
-    };
+    });
   },
 
   /*
    * Utility function for turning indexed vertices into a "raw" coordinate array
    * arranged as triangles.
    */
-  toRawTriangleArray: function (indexedVertices) {
+  shape.prototype.toRawTriangleArray = function () {
     var result = [],
         i,
         j,
         maxi,
         maxj;
 
-    for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
-      for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
+    for (i = 0, maxi = this.indices.length; i < maxi; i += 1) {
+      for (j = 0, maxj = this.indices[i].length; j < maxj; j += 1) {
         result = result.concat(
-          indexedVertices.vertices[
-            indexedVertices.indices[i][j]
+          this.vertices[
+            this.indices[i][j]
           ]
         );
       }
@@ -196,26 +206,27 @@ var Shape = {
    * arranged as line segments.
    */
 
-  toRawLineArray: function (indexedVertices) {
+  shape.prototype.toRawLineArray = function () {
     var result = [],
         i,
         j,
         maxi,
         maxj;
 
-    for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
-      for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
+    for (i = 0, maxi = this.indices.length; i < maxi; i += 1) {
+      for (j = 0, maxj = this.indices[i].length; j < maxj; j += 1) {
         result = result.concat(
-          indexedVertices.vertices[
-            indexedVertices.indices[i][j]
+          this.vertices[
+            this.indices[i][j]
           ],
 
-          indexedVertices.vertices[
-            indexedVertices.indices[i][(j + 1) % maxj]
+          this.vertices[
+            this.indices[i][(j + 1) % maxj]
           ]
         );
       }
     }
     return result;
   }
-};
+  return shape;
+})();
