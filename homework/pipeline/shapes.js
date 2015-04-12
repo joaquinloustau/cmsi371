@@ -12,6 +12,7 @@ var Shape = (function () {
     this.color = options.color || { r: 1.0, g: 0.0, b: 0.0 };
     this.children = options.children || [];
     this.mode = options.mode;
+    this.instanceTransformation = options.instanceTransformation || {};
   };
 
   /*

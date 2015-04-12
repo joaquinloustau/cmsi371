@@ -210,5 +210,9 @@ var Matrix3D = (function () {
     }
   };
 
+  matrix3D.prototype.getElements = function () {
+    return this.elements;
+  };
+
   return matrix3D;
 })();
