@@ -25,8 +25,6 @@
     currentRotation = 0.0,
     currentInterval,
     rotationMatrix,
-    scaleMatrix,
-    translationMatrix,
     vertexPosition,
     vertexColor,
 
@@ -59,8 +57,7 @@
   var shape2 = new Shape ({
                color: { r: 0.0, g: 0.0, b: 1.0 },
                vertices: Shape.cube().toRawTriangleArray(),
-               mode: gl.TRIANGLES,
-               transformations: {sx: 0.1, sy: 0.1, sz: 0.1}
+               mode: gl.TRIANGLES
               });
 
   var shape3 = new Shape({

@@ -54,9 +54,6 @@
                vertices: Shape.sphere().toRawLineArray(),
                mode: gl.LINES
               });
-
-  console.log(gl.LINES);
-  console.log(gl.TRIANGLES);
   var shape2 = new Shape ({
                color: { r: 0.0, g: 0.0, b: 1.0 },
                vertices: Shape.cube().toRawTriangleArray(),
@@ -77,8 +74,7 @@
  
   // Build the objects to display.
   objectsToDraw = [shape1, shape2, shape3];
-  console.log(objectsToDraw);
-
+  
   // Pass the vertices to WebGL.
   passVertices = function (objectsToDraw) {
     var i, maxi, j, maxj;
@@ -86,8 +82,6 @@
     for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
       objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
           objectsToDraw[i].vertices);
-
-      //console.log(objectsToDraw[i]);
 
       if (!objectsToDraw[i].colors) {
         // If we have a single color, we expand that into an array
@@ -156,7 +150,6 @@
   drawObject = function (object) {
     var i;
 
-    console.log(object);
     // Set the varying colors.
     gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
     gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
@@ -164,10 +157,6 @@
     // Set the varying vertex coordinates.
     gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
     gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-    console.log("object.mode " + object.mode);
-    console.log("object.buffer " + object.buffer);
-    console.log("object.vertices " + object.vertices);
-    console.log("object children " + object.children);
     gl.drawArrays(object.mode, 0, object.vertices.length / 3);
 
     if (object.children) {

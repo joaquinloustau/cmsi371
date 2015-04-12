@@ -7,12 +7,24 @@ var Shape = (function () {
 
   //Define the constructor
   var shape = function (options) {
+    options.transformations = options.transformations || {};
+
     this.vertices = options.vertices || [];
     this.indices = options.indices || [];
     this.color = options.color || { r: 1.0, g: 0.0, b: 0.0 };
     this.children = options.children || [];
     this.mode = options.mode;
-    this.instanceTransformation = options.instanceTransformation || {};
+    this.transformations = {};
+    this.transformations.tx = options.transformations.tx || 0;
+    this.transformations.ty = options.transformations.ty || 0;
+    this.transformations.tz = options.transformations.tz || 0;
+    this.transformations.sx = options.transformations.sx || 1;
+    this.transformations.sy = options.transformations.sy || 1;
+    this.transformations.sz = options.transformations.sz || 1;
+    this.transformations.angle = options.transformations.angle || 0;
+    this.transformations.rx = options.transformations.rx || 1;
+    this.transformations.ry = options.transformations.ry || 1;
+    this.transformations.rz = options.transformations.rz || 1;
   };
 
   /*

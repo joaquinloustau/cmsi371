@@ -193,21 +193,14 @@ var Matrix3D = (function () {
     );
   };
 
-  matrix3D.getInstanceTransformation = function (transformations) {
-    var translate = new Matrix3D();
-        scale = new Matrix3D();
-        rotate = new Matrix3D();
-
-    translate = Matrix3D.getTranslationMatrix(
-      transformations.tx || 0,
-      transformations.ty || 0,
-      transformations.tz || 0
+  matrix3D.getInstanceMatrix = function (transformations) {
+    return (this.multiplication(Matrix3D.getTranslationMatrix(
+      transformations.tx, transformations.ty, transformations.tz)
+      ).multiplication(Matrix3D.getScaleMatrix(
+        transformations.sx, transformations.sy, transformations.sz)
+      ).multiplication(Matrix3D.getRotationMatrix(
+        transformations.angle, transformations.rx, transformations.ry, transformations.rz))
     );
-
-
-    if (transformations.tx) {
-      translate = Matrix3D.getTranslationMatrix(transformations.tx, transformations.ty, transformations.tz);
-    }
   };
 
   matrix3D.prototype.getElements = function () {
