@@ -20,12 +20,12 @@ $(function () {
                           1, 1, 1, 1,
                           1, 1, 1, 1)
 
-    var m2 = m1.multiplication([0, 0, 0, 0,
+    var m2 = m1.multiplication(new Matrix(0, 0, 0, 0,
                               0, 0, 0, 0,
                               0, 0, 0, 0,
-                              0, 0, 0, 0])
+                              0, 0, 0, 0)
 
-    deepEqual(m2.elements, [0, 0, 0, 0,
+    deepEqual(m2.getElements, [0, 0, 0, 0,
                             0, 0, 0, 0,
                             0, 0, 0, 0,
                             0, 0, 0, 0],

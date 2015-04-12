@@ -187,7 +187,7 @@ var Matrix3D = (function () {
       -2.0 * zFar * zNear / depth,
 
       0.0,
-      0.0
+      0.0,
       -1.0,
       0.0
     );
