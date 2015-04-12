@@ -49,10 +49,16 @@
       // Note this new additional output.
       attribute vec3 vertexColor;
       varying vec4 finalVertexColor;
+
+      //Matrices
       uniform mat4 rotationMatrix;
+      uniform mat4 scaleMatrix;
+      uniform mat4 translationMatrix;
+      uniform mat4 instanceMatrix;
+
 
       void main(void) {
-        gl_Position = rotationMatrix * vec4(vertexPosition, 1.0);
+        gl_Position = scaleMatrix * rotationMatrix * translationMatrix * instanceMatrix * vec4(vertexPosition, 1.0);;
         finalVertexColor = vec4(vertexColor, 1.0);
       }
     </script>

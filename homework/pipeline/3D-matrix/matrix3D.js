@@ -22,7 +22,7 @@ var Matrix3D = (function () {
         // reset the individual sum each iteration
         sum = 0;
         for (i = 0; i < 4; i++) {
-          sum += this.elements[row * 4 + i] * matrix2[i * 4 + col];
+          sum += this.elements[row * 4 + i] * matrix2.elements[i * 4 + col];
       }
       matrixResult[row * 4 + col] = sum;
       }

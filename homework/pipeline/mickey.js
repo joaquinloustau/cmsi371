@@ -27,6 +27,8 @@
     rotationMatrix,
     scaleMatrix,
     translationMatrix,
+    initialTransform,
+    instanceMatrix,
     vertexPosition,
     vertexColor,
 
@@ -51,32 +53,36 @@
   gl.enable(gl.DEPTH_TEST);
   gl.clearColor(0.0, 0.0, 0.0, 0.0);
   gl.viewport(0, 0, canvas.width, canvas.height);
+
   var sphere1 = new Shape ({
-               color: { r: 0.0, g: 1.0, b: 0.0 },
-               vertices: Shape.sphere().toRawLineArray(),
-               mode: gl.LINES
+              color: { r: 0.0, g: 1.0, b: 0.0 },
+              vertices: Shape.sphere().toRawLineArray(),
+              mode: gl.LINES,
+              transformations: {sx: 2.0, sy: 2.0, sz: 2.0}
               });
+
   var cube1 = new Shape ({
-               color: { r: 0.0, g: 0.0, b: 1.0 },
-               vertices: Shape.cube().toRawTriangleArray(),
-               mode: gl.TRIANGLES,
-               transformations: {sx: 0.1, sy: 0.1, sz: 0.1}
+              color: { r: 0.0, g: 0.0, b: 1.0 },
+              vertices: Shape.cube().toRawTriangleArray(),
+              mode: gl.TRIANGLES,
+              transformations: {sx: 1, sy: 1, sz: 1}
               });
 
   var shape3 = new Shape({
               color: { r: 0.0, g: 0.0, b: 1.0 },
               vertices: Shape.icosahedron().toRawLineArray(),
               mode: gl.LINES,
-              children: [ new Shape ({
+              transformations: {tx: 0.0, ty: 0.0, tz: 0.0, sx: 1, sy: 1, sz: 1},
+              children: [ new Shape({
                 color: {r: 1.0, g: 0.0, b: 0.0},
                 vertices: Shape.triangularPrism().toRawTriangleArray(),
-                mode: gl.TRIANGLES
+                mode: gl.TRIANGLES,
                 })]
               });
 
- 
   // Build the objects to display.
   shapesToDraw = [sphere1, cube1, shape3];
+  console.log(shapesToDraw);
   
   // Pass the vertices to WebGL.
   passVertices = function (shapesToDraw) {
@@ -145,22 +151,39 @@
   gl.enableVertexAttribArray(vertexPosition);
   vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
   gl.enableVertexAttribArray(vertexColor);
+
   rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
   translationMatrix = gl.getUniformLocation(shaderProgram, "translationMatrix");
   scaleMatrix = gl.getUniformLocation(shaderProgram, "scaleMatrix");
+  instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
+
+  // Initialize scale matrix
+  gl.uniformMatrix4fv(scaleMatrix, 
+      gl.FALSE, 
+      new Float32Array(Matrix3D.getScaleMatrix(0.25, 0.25, 0.25).getElements())
+  );
+
+  // Initialize translation matrix
+  gl.uniformMatrix4fv(translationMatrix, 
+      gl.FALSE, 
+      new Float32Array(Matrix3D.getTranslationMatrix(0, 0, 0).getElements())
+  );
 
   /*
    * Displays an individual object.
    */
   drawObject = function (object) {
-    var i;
-    var instanceMatrix = new Matrix3D();
-    instanceMatrix = instanceMatrix.getInstanceMatrix(object.transformations);
+    var i,
+        instanceMat = new Matrix3D();
+
+    instanceMat = instanceMat.getInstanceMatrix(object.transformations);
+    //console.log(object.transformations);
+    //console.log(instanceMatrix);
 
     //Set instance Matrix
-    gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "instanceMatrix"),
+    gl.uniformMatrix4fv(instanceMatrix,
                         gl.FALSE,
-                        new Float32Array(instanceMatrix.getElements())
+                        new Float32Array(instanceMat.getElements())
     );
 
     // Set the varying colors.
