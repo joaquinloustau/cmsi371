@@ -63,20 +63,21 @@
 
   var cube1 = new Shape ({
               color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.cube().toRawTriangleArray(),
-              mode: gl.TRIANGLES,
-              transformations: {sx: 1, sy: 1, sz: 1}
+              vertices: Shape.cube().toRawLineArray(),
+              mode: gl.LINES,
+              transformations: {sx: 1, sy: 1, sz: 1, tx: -2.5, ty: 0, tz: 2}
               });
 
   var shape3 = new Shape({
               color: { r: 0.0, g: 0.0, b: 1.0 },
               vertices: Shape.icosahedron().toRawLineArray(),
               mode: gl.LINES,
-              transformations: {tx: 0.0, ty: 0.0, tz: 0.0, sx: 1, sy: 1, sz: 1},
+              transformations: {tx: 2.0, ty: 2.0, tz: 0.0},
               children: [ new Shape({
                 color: {r: 1.0, g: 0.0, b: 0.0},
                 vertices: Shape.triangularPrism().toRawTriangleArray(),
                 mode: gl.TRIANGLES,
+                transformations: {sx: 1, sy: 1, sz: 1, tx: 0, ty: -2.5, tz: 0, angle: 40, rx: 1, ry: 2 , rz: 1 }
                 })]
               });
 
@@ -183,7 +184,7 @@
     //Set instance Matrix
     gl.uniformMatrix4fv(instanceMatrix,
                         gl.FALSE,
-                        new Float32Array(instanceMat.getElements())
+                        new Float32Array(instanceMat.getColumnMajorOrder().getElements())
     );
 
     // Set the varying colors.

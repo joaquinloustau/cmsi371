@@ -76,10 +76,10 @@ var Matrix3D = (function () {
    * Based on the original glRotate reference:
    *     http://www.opengl.org/sdk/docs/man/xhtml/glRotate.xml
    */
-  matrix3D.getRotationMatrix = function (angle, x, y, z) {
+  matrix3D.getRotationMatrix = function (angle, rx, ry, rz) {
     // In production code, this function should be associated
     // with a matrix object with associated functions.
-    var axisLength = Math.sqrt((x * x) + (y * y) + (z * z)),
+    var axisLength = Math.sqrt((rx * rx) + (ry * ry) + (rz * rz)),
       s = Math.sin(angle * Math.PI / 180.0),
       c = Math.cos(angle * Math.PI / 180.0),
       oneMinusC = 1.0 - c,
@@ -97,20 +97,20 @@ var Matrix3D = (function () {
       zs;
 
     // Normalize the axis vector of rotation.
-    x /= axisLength;
-    y /= axisLength;
-    z /= axisLength;
+    rx /= axisLength;
+    ry /= axisLength;
+    rz /= axisLength;
 
     // *Now* we can calculate the other terms.
-    x2 = x * x;
-    y2 = y * y;
-    z2 = z * z;
-    xy = x * y;
-    yz = y * z;
-    xz = x * z;
-    xs = x * s;
-    ys = y * s;
-    zs = z * s;
+    x2 = rx * rx;
+    y2 = ry * ry;
+    z2 = rz * rz;
+    xy = rx * ry;
+    yz = ry * rz;
+    xz = rx * rz;
+    xs = rx * s;
+    ys = ry * s;
+    zs = rz * s;
 
     // Return result matrix.
     return new Matrix3D(
@@ -187,7 +187,7 @@ var Matrix3D = (function () {
       -2.0 * zFar * zNear / depth,
 
       0.0,
-      0.0,
+      0.0
       -1.0,
       0.0
     );
@@ -200,6 +200,30 @@ var Matrix3D = (function () {
         transformations.sx, transformations.sy, transformations.sz)
       ).multiplication(Matrix3D.getRotationMatrix(
         transformations.angle, transformations.rx, transformations.ry, transformations.rz))
+    );
+  };
+
+  matrix3D.prototype.getColumnMajorOrder = function () {
+    return new Matrix3D(
+        this.elements[0],
+        this.elements[4],
+        this.elements[8],
+        this.elements[12],
+
+        this.elements[1],
+        this.elements[5],
+        this.elements[9],
+        this.elements[13],
+
+        this.elements[2],
+        this.elements[6],
+        this.elements[10],
+        this.elements[14],
+
+        this.elements[3],
+        this.elements[7],
+        this.elements[11],
+        this.elements[15]
     );
   };
 
