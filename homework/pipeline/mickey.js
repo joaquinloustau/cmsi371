@@ -10,7 +10,7 @@
   var gl, // The WebGL context.
 
     // This variable stores 3D model information.
-    objectsToDraw,
+    shapesToDraw,
 
     //Function that passes the shape vertices to WebGL
     passVertices,
@@ -51,12 +51,12 @@
   gl.enable(gl.DEPTH_TEST);
   gl.clearColor(0.0, 0.0, 0.0, 0.0);
   gl.viewport(0, 0, canvas.width, canvas.height);
-  var shape1 = new Shape ({
+  var sphere1 = new Shape ({
                color: { r: 0.0, g: 1.0, b: 0.0 },
                vertices: Shape.sphere().toRawLineArray(),
                mode: gl.LINES
               });
-  var shape2 = new Shape ({
+  var cube1 = new Shape ({
                color: { r: 0.0, g: 0.0, b: 1.0 },
                vertices: Shape.cube().toRawTriangleArray(),
                mode: gl.TRIANGLES,
@@ -76,36 +76,36 @@
 
  
   // Build the objects to display.
-  objectsToDraw = [shape1, shape2, shape3];
+  shapesToDraw = [sphere1, cube1, shape3];
   
   // Pass the vertices to WebGL.
-  passVertices = function (objectsToDraw) {
+  passVertices = function (shapesToDraw) {
     var i, maxi, j, maxj;
 
-    for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-      objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
-          objectsToDraw[i].vertices);
+    for (i = 0, maxi = shapesToDraw.length; i < maxi; i += 1) {
+      shapesToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
+          shapesToDraw[i].vertices);
 
-      if (!objectsToDraw[i].colors) {
+      if (!shapesToDraw[i].colors) {
         // If we have a single color, we expand that into an array
         // of the same color over and over.
-        objectsToDraw[i].colors = [];
-        for (j = 0, maxj = objectsToDraw[i].vertices.length / 3;
+        shapesToDraw[i].colors = [];
+        for (j = 0, maxj = shapesToDraw[i].vertices.length / 3;
             j < maxj; j += 1) {
-          objectsToDraw[i].colors = objectsToDraw[i].colors.concat(
-            objectsToDraw[i].color.r,
-            objectsToDraw[i].color.g,
-            objectsToDraw[i].color.b
+          shapesToDraw[i].colors = shapesToDraw[i].colors.concat(
+            shapesToDraw[i].color.r,
+            shapesToDraw[i].color.g,
+            shapesToDraw[i].color.b
           );
         }
       }
-      objectsToDraw[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
-          objectsToDraw[i].colors);
+      shapesToDraw[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
+          shapesToDraw[i].colors);
 
-      // Look for nested objectsToDraw' vertices to pass. Also checks to make
+      // Look for nested shapesToDraw' vertices to pass. Also checks to make
       // sure the children array isn't empty
-      if (objectsToDraw[i].children && objectsToDraw[i].children.length !== 0) {
-        passVertices(objectsToDraw[i].children);
+      if (shapesToDraw[i].children && shapesToDraw[i].children.length !== 0) {
+        passVertices(shapesToDraw[i].children);
       }
     }
   }
@@ -146,12 +146,22 @@
   vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
   gl.enableVertexAttribArray(vertexColor);
   rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
+  translationMatrix = gl.getUniformLocation(shaderProgram, "translationMatrix");
+  scaleMatrix = gl.getUniformLocation(shaderProgram, "scaleMatrix");
 
   /*
    * Displays an individual object.
    */
   drawObject = function (object) {
     var i;
+    var instanceMatrix = new Matrix3D();
+    instanceMatrix = instanceMatrix.getInstanceMatrix(object.transformations);
+
+    //Set instance Matrix
+    gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "instanceMatrix"),
+                        gl.FALSE,
+                        new Float32Array(instanceMatrix.getElements())
+    );
 
     // Set the varying colors.
     gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
@@ -181,8 +191,8 @@
     gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix3D.getRotationMatrix(currentRotation, 0, 1, 0).getElements()));
 
     // Display the objects.
-    for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-      drawObject(objectsToDraw[i]);
+    for (i = 0, maxi = shapesToDraw.length; i < maxi; i += 1) {
+      drawObject(shapesToDraw[i]);
     }
 
     // All done.
@@ -190,7 +200,7 @@
   };
 
   // Draw the initial scene.
-  passVertices(objectsToDraw);
+  passVertices(shapesToDraw);
   drawScene();
 
   // Set up the rotation toggle: clicking on the canvas does it.

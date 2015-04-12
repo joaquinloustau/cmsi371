@@ -193,7 +193,7 @@ var Matrix3D = (function () {
     );
   };
 
-  matrix3D.getInstanceMatrix = function (transformations) {
+  matrix3D.prototype.getInstanceMatrix = function (transformations) {
     return (this.multiplication(Matrix3D.getTranslationMatrix(
       transformations.tx, transformations.ty, transformations.tz)
       ).multiplication(Matrix3D.getScaleMatrix(
