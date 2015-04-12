@@ -25,6 +25,9 @@ var Shape = (function () {
     this.transformations.rx = options.transformations.rx || 1;
     this.transformations.ry = options.transformations.ry || 1;
     this.transformations.rz = options.transformations.rz || 1;
+
+    //Circle properties
+    this.radius = options.radius || 0;
   };
 
   /*
@@ -157,7 +160,11 @@ var Shape = (function () {
     }
 
     sphereData.vertices = vertices;
-    sphereData.indices = indices
+    sphereData.indices = indices;
+    sphereData.radius = radius;
+    sphereData.latBelts = latBelts;
+    sphereData.longBelts = longBelts;
+
 
     return new shape(sphereData);
   },

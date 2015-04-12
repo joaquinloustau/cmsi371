@@ -4,228 +4,189 @@
 $(function () {
 
   // This suite checks instantiation basics.
-  test("Creation and Data Access", function () {
-    var m1 = new Matrix3D();
+  test("Creation and properties", function () {
+    var s1 = new Shape({});
 
-    deepEqual(m1.elements, [1, 0, 0, 0,
-                        0, 1, 0, 0,
-                        0, 0, 1, 0,
-                        0, 0, 0, 1],
-          "Default matrix constructor");
+    deepEqual(s1.vertices, [],
+          "Default vertices value");
+
+    deepEqual(s1.indices, [],
+          "Default indices value");
+
+    deepEqual(s1.color, { r: 1.0, g: 0.0, b: 0.0 },
+          "Default color values");   
+
+    var translationDefault = [s1.transformations.tx, s1.transformations.ty, s1.transformations.tz];
+    deepEqual(translationDefault, [0, 0, 0],
+          "Default translation values");   
+
+    var scalingDefault = [s1.transformations.sx, s1.transformations.sy, s1.transformations.sz];
+    deepEqual(scalingDefault, [1, 1, 1],
+          "Default scaling values");   
+
+    var rotationDefault = [s1.transformations.angle, s1.transformations.rx, s1.transformations.ry, s1.transformations.rz];
+    deepEqual(rotationDefault, [0, 1, 1, 1],
+          "Default rotation value");       
   });
 
-  test("Matrix Multiplicaton", function () {
-    var m1 = new Matrix3D(1, 1, 1, 1,
-                          1, 1, 1, 1,
-                          1, 1, 1, 1,
-                          1, 1, 1, 1)
+  test("Icosahedron", function () {
+    var s2 = new Shape({
+              color: { r: 0.0, g: 0.0, b: 1.0 },
+              vertices: Shape.icosahedron().vertices,
+              indices: Shape.icosahedron().indices,
+              mode: 1,
+              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+            });
 
-    var m2 = m1.multiplication(new Matrix(0, 0, 0, 0,
-                              0, 0, 0, 0,
-                              0, 0, 0, 0,
-                              0, 0, 0, 0)
+    deepEqual(s2.vertices,[[ -0.525731112119133606, 0.0, 0.850650808352039932 ],
+                          [ 0.525731112119133606, 0.0, 0.850650808352039932 ],
+                          [ -0.525731112119133606, 0.0, -0.850650808352039932 ],
+                          [ 0.525731112119133606, 0.0, -0.850650808352039932 ],
+                          [ 0.0, 0.850650808352039932, 0.525731112119133606 ],
+                          [ 0.0, 0.850650808352039932, -0.525731112119133606 ],
+                          [ 0.0, -0.850650808352039932, 0.525731112119133606 ],
+                          [ 0.0, -0.850650808352039932, -0.525731112119133606 ],
+                          [ 0.850650808352039932, 0.525731112119133606, 0.0 ],
+                          [ -0.850650808352039932, 0.525731112119133606, 0.0 ],
+                          [ 0.850650808352039932, -0.525731112119133606, 0.0 ],
+                          [ -0.850650808352039932, -0.525731112119133606, 0.0 ]],
+            "Icosahedron vertices values");
 
-    deepEqual(m2.getElements, [0, 0, 0, 0,
-                            0, 0, 0, 0,
-                            0, 0, 0, 0,
-                            0, 0, 0, 0],
-              "Multiplication by Matrix Zero")
-
-    m2 = m1.multiplication([1, 0, 0, 0,
-                              0, 1, 0, 0,
-                              0, 0, 1, 0,
-                              0, 0, 0, 1])
-    deepEqual(m2.elements, [1, 1, 1, 1,
-                            1, 1, 1, 1,
-                            1, 1, 1, 1,
-                            1, 1, 1, 1],
-              "Multiplication by Identity Matrix")
-
-    m2 = m1.multiplication([1, 2, 3, 4,
-                              5, 6, 7, 8,
-                              -8, -7, -6, -5,
-                              -4, -3, -2, -1])
-
-    deepEqual(m2.elements, [-6, -2, 2, 6,
-                            -6, -2, 2, 6,
-                            -6, -2, 2, 6,
-                            -6, -2, 2, 6],
-              "Multiplication by random Matrix")
+    deepEqual(s2.indices, [[ 1, 4, 0 ],
+                          [ 4, 9, 0 ],
+                          [ 4, 5, 9 ],
+                          [ 8, 5, 4 ],
+                          [ 1, 8, 4 ],
+                          [ 1, 10, 8 ],
+                          [ 10, 3, 8 ],
+                          [ 8, 3, 5 ],
+                          [ 3, 2, 5 ],
+                          [ 3, 7, 2 ],
+                          [ 3, 10, 7 ],
+                          [ 10, 6, 7 ],
+                          [ 6, 11, 7 ],
+                          [ 6, 0, 11 ],
+                          [ 6, 1, 0 ],
+                          [ 10, 1, 6 ],
+                          [ 11, 0, 9 ],
+                          [ 2, 11, 9 ],
+                          [ 5, 2, 9 ],
+                          [ 11, 2, 7 ]],
+            "Icosahedron indices values");
   });
 
-  test("Matrix Translation", function () {
-    var m3 = Matrix3D.getTranslationMatrix(4, -8, 7);
-    deepEqual(m3.elements, [1, 0, 0, 4,
-                            0, 1, 0, -8,
-                            0, 0, 1, 7,
-                            0, 0, 0, 1],
-              "Translation Test #1")
+  test("Cube", function () {
+    var s3 = new Shape({
+              color: { r: 0.0, g: 0.0, b: 1.0 },
+              vertices: Shape.cube().vertices,
+              indices: Shape.cube().indices,
+              mode: 1,
+              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+            });
 
-    m3 = Matrix3D.getTranslationMatrix(0, 0, 0);
-    deepEqual(m3.elements, [1, 0, 0, 0,
-                            0, 1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1],
-              "Translation Test #2")
+    deepEqual(s3.vertices, [[0.5, 0.5, 0.5],
+                          [0.5, 0.5, -0.5],
+                          [0.5, -0.5, 0.5],
+                          [0.5, -0.5, -0.5],
+                          [-0.5, 0.5, 0.5],
+                          [-0.5, 0.5, -0.5],
+                          [-0.5, -0.5, 0.5],
+                          [-0.5, -0.5, -0.5]],
+          "Cube vertices values");
 
-    m3 = Matrix3D.getTranslationMatrix(.5, -4, 8);
-    deepEqual(m3.elements, [1, 0, 0, 0.5,
-                            0, 1, 0, -4,
-                            0, 0, 1, 8,
-                            0, 0, 0, 1],
-              "Translation Test #3")
+    deepEqual(s3.indices, [[0, 1, 3],
+                          [2, 0, 3],
+                          [7, 2, 3],
+                          [6, 7, 2],
+                          [4, 0, 2],
+                          [6, 4, 2],
+                          [5, 1, 7],
+                          [1, 3, 7],
+                          [4, 5, 7],
+                          [6, 4, 7],
+                          [4, 5, 0],
+                          [5, 1, 0]],
+              "Cube indices values");
+  });
 
-  })
+  test("Triangular Prism", function () {
+    var s4 = new Shape({
+              color: { r: 0.0, g: 0.0, b: 1.0 },
+              vertices: Shape.triangularPrism().vertices,
+              indices: Shape.triangularPrism().indices,
+              mode: 1,
+              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+            });
 
-  test("Matrix Scaling", function () {
-    var m4 = Matrix3D.getScaleMatrix(-37, -28, 57);
-    deepEqual(m4.elements, [-37, 0, 0, 0,
-                            0, -28, 0, 0,
-                            0, 0, 57, 0,
-                            0, 0, 0, 1],
-              "Scaling Test #1")
+    deepEqual(s4.vertices, [[ 0.75, 0.0, -0.75 ],
+                            [ -0.75, 0.0, -0.75 ],
+                            [ 0.0, 0.5, -0.75 ],
+                            [ 0.75, 0.0, 0.75 ],
+                            [ -0.75, 0.0, 0.75 ],
+                            [ 0.0, 0.5, 0.75 ]],
+          "Triangular Prism vertices values");
 
-    m4 = Matrix3D.getScaleMatrix(0, 0, 0);
-    deepEqual(m4.elements, [0, 0, 0, 0,
-                            0, 0, 0, 0,
-                            0, 0, 0, 0,
-                            0, 0, 0, 1],
-              "Scaling Test #2")
+    deepEqual(s4.indices, [[ 0, 1, 2 ],
+                          [ 0, 2, 3 ], 
+                          [ 3, 2, 5 ],
+                          [ 3, 5, 4 ],
+                          [ 4, 5, 1 ],  
+                          [ 1, 5, 2 ],
+                          [ 0, 3, 1 ], 
+                          [ 4, 3, 1 ]],
+          "Triangular Prism indices values");     
+  });
 
-    m4 = Matrix3D.getScaleMatrix(-1, 1.1, 1);
-    deepEqual(m4.elements, [-1, 0, 0, 0,
-                            0, 1.1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1],
-              "Scaling Test #3")
+  test("Sphere", function () {
+    var s5 = new Shape({
+              color: { r: 0.0, g: 0.0, b: 1.0 },
+              vertices: Shape.sphere().vertices,
+              indices: Shape.sphere().indices,
+              radius: Shape.sphere().radius,
+              mode: 1,
+              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+            });
 
-  })
+    deepEqual(s5.radius, 0.8,
+          "Sphere radius value");
+  });
 
-  test("Matrix Rotation", function () {
-    var m5 = Matrix3D.getRotationMatrix(0, 0, 0, 1);
-    deepEqual(m5.elements, [1, 0, 0, 0,
-                            0, 1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1],
-              "Rotation Test #1")
+  test("Composite or group objects", function () {
+    var s6  = new Shape({
+              color: { r: 0.0, g: 0.0, b: 1.0 },
+              vertices: Shape.triangularPrism().vertices,
+              indices: Shape.triangularPrism().indices,
+              mode: 1,
+              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+              children: [ new Shape({
+                color: { r: 1.0, g: 0.0, b: 0.0 },
+                vertices: Shape.cube().vertices,
+                mode: 1,
+                transformations: { sx: 1, sy: 1, sz: 1, tx: 0, ty: -2.5, tz: 0, angle: 40, rx: 1, ry: 2 , rz: 1 },
+                children: [ new Shape({
+                color: { r: 0.0, g: 0.0, b: 0.0 },
+                vertices: Shape.triangularPrism().toRawTriangleArray(),
+                mode: 1,
+                transformations: { sx: 2, sy: 1, sz: 1, tx: 0, ty: -2.5, tz: 0, angle: 40, rx: 1, ry: 2 , rz: 1 }
+                })]
+              })]
+            });
 
-    m5 = Matrix3D.getRotationMatrix(1, 0, 1, 0);
-    deepEqual(m5.elements, [Math.cos(Math.PI / 180.0), 0, Math.sin(Math.PI / 180.0), 0,
-                            0, 1, 0, 0,
-                            (-1 * Math.sin(Math.PI / 180.0)), 0, Math.cos(Math.PI / 180.0), 0,
-                            0, 0, 0, 1],
-              "Rotation Test #2")
+    deepEqual(s6.children[0].vertices, [[0.5, 0.5, 0.5],
+                                        [0.5, 0.5, -0.5],
+                                        [0.5, -0.5, 0.5],
+                                        [0.5, -0.5, -0.5],
+                                        [-0.5, 0.5, 0.5],
+                                        [-0.5, 0.5, -0.5],
+                                        [-0.5, -0.5, 0.5],
+                                        [-0.5, -0.5, -0.5]],
+          "Child vertices values");
 
-    m5 = Matrix3D.getRotationMatrix(320, 1, 1, 1);
-    var axisLength = Math.sqrt(3),
-        x = 1 / axisLength,
-        y = 1 / axisLength,
-        z = 1 / axisLength,
-        cosine = Math.cos(320 * Math.PI / 180.0),
-        sine = Math.sin(320 * Math.PI / 180.0);
+    deepEqual(s6.children[0].children[0].color.r, 0.0,
+          "Children's child color value"); 
 
-    deepEqual(m5.elements,
-              [(x * x * (1 - cosine) + cosine), (x * y * (1 - cosine) - z * sine), (x * z * (1 - cosine) + y * sine), 0,
-              (x * y * (1 - cosine) + z * sine), (y * y * (1 - cosine) + cosine), (y * z * (1 - cosine) - x * sine), 0,
-              (x * z * (1 - cosine) - y * sine), (y * z * (1 - cosine) + x * sine), (z * z * (1 - cosine) + cosine), 0,
-              0, 0, 0, 1],
-              "Rotation Test #3");
+    deepEqual(s6.children[0].children[0].transformations.sx, 2,
+          "Children's child scaling transformation value");      
+  });
 
-    m5 = Matrix3D.getRotationMatrix(-1, 4, -11, 0.3);
-    axisLength = Math.sqrt(4 * 4 + -11 * -11 + 0.3 * 0.3);
-    x = 4 / axisLength;
-    y = -11 / axisLength;
-    z = 0.3 / axisLength;
-    cosine = Math.cos(-1 * Math.PI / 180.0);
-    sine = Math.sin(-1 * Math.PI / 180.0);
-
-    deepEqual(m5.elements,
-              [(x * x * (1 - cosine) + cosine), (x * y * (1 - cosine) - z * sine), (x * z * (1 - cosine) + y * sine), 0,
-              (x * y * (1 - cosine) + z * sine), (y * y * (1 - cosine) + cosine), (y * z * (1 - cosine) - x * sine), 0,
-              (x * z * (1 - cosine) - y * sine), (y * z * (1 - cosine) + x * sine), (z * z * (1 - cosine) + cosine), 0,
-              0, 0, 0, 1],
-              "Rotation Test #4");
-
-    m5 = Matrix3D.getRotationMatrix(2.6, 0, 0, 1);
-    x = 0;
-    y = 0;
-    z = 1;
-    cosine = Math.cos(2.6 * Math.PI / 180.0);
-    sine = Math.sin(2.6 * Math.PI / 180.0);
-
-    deepEqual(m5.elements,
-            [cosine, (-1 * z * sine), 0, 0,
-            (z * sine), cosine, 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1],
-            "Rotation Test #5");
-  })
-
-  test("Matrix Orthographic Projection", function () {
-    var m6 = Matrix3D.getOrthoMatrix(-3, 5, -1, 6, -8, 8)
-        width = 5 - (-3),
-        height = 6 - (-1),
-        depth = 8 - (-8);
-
-    deepEqual (m6.elements, [2.0 / width, 0.0, 0.0, -(5 + (-3)) / width,
-                            0.0, 2.0 / height, 0.0, -(6 + (-1)) / height,
-                            0.0, 0.0, -2.0 / depth, -(8 + (-8)) / depth,
-                            0.0, 0.0, 0.0, 1.0],
-                            "Orthographic Projection #1");
-
-    var m6 = Matrix3D.getOrthoMatrix(0, 2, 0, 2, 0, 2)
-        width = 2 - 0,
-        height = 2 - 0,
-        depth = 2 - 0;
-
-    deepEqual (m6.elements, [2.0 / width, 0.0, 0.0, -(2 + 0) / width,
-                            0.0, 2.0 / height, 0.0, -(2 + 0) / height,
-                            0.0, 0.0, -2.0 / depth, -(2 + 0) / depth,
-                            0.0, 0.0, 0.0, 1.0],
-                            "Orthographic Projection #2");
-
-    var m6 = Matrix3D.getOrthoMatrix(-1, 1, -1, 1, -1, 1)
-        width = 1 - (-1),
-        height = 1 - (-1),
-        depth = 1 - (-1);
-
-    deepEqual (m6.elements, [2.0 / width, 0.0, 0.0, -(1 + (-1)) / width,
-                            0.0, 2.0 / height, 0.0, -(1 + (-1)) / height,
-                            0.0, 0.0, -2.0 / depth, -(1 + (-1)) / depth,
-                            0.0, 0.0, 0.0, 1.0],
-                            "Orthographic Projection #3");
-  })
-  
-  test("Matrix Perspective Projection", function () {
-    var m7 = Matrix3D.getFrustumMatrix(-4, 4, -2, 2, -10, 10);
-        width = 4 + 4;
-        height = 2 + 2;
-        depth = 10 + 10;
-        
-    deepEqual(m7.elements, [2 * -10 / width, 0, 0, 0,
-                            0, -5, 0, 0,
-                            0, 0, 0, 10,
-                            0, 0, -1, 0],
-              "Perspective Projection Test #1");
-
-    m7 = Matrix3D.getFrustumMatrix(-1, 1, -1, 1, -1, 1);
-    width = 1 + 1;
-    height = 1 + 1;
-    depth = 1 + 1;
-    deepEqual(m7.elements, [-1, 0, 0, 0,
-                            0, -1, 0, 0,
-                            0, 0, 0, 1,
-                            0, 0, -1, 0],
-              "Perspective Projection Test #2");
-
-    m7 = Matrix3D.getFrustumMatrix(0, 1, 0, 1, 0, 1);
-    width = 1;
-    height = 1;
-    depth = 1;
-    deepEqual(m7.elements, [0, 0, 1, 0,
-                            0, 0, 1, 0,
-                            0, 0, -1, 0,
-                            0, 0, -1, 0],
-              "Perspective Projection Test #3");
-  })
 });
