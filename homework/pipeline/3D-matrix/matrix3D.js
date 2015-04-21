@@ -2,6 +2,7 @@
  * For maximum modularity, we place everything within a single function that
  * takes the canvas that it will need.
  */
+// JD: 4(b)
 var Matrix3D = (function () {
   // Define the constructor.
   var matrix3D = function () {
@@ -135,7 +136,8 @@ var Matrix3D = (function () {
       1.0
     );
   };
-  
+
+  // JD: 5(b)
   matrix3D.getOrthoMatrix = function (left, right, bottom, top, zNear, zFar) {
     var width = right - left,
       height = top - bottom,

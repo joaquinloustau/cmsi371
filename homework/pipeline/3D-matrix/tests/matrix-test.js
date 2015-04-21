@@ -229,4 +229,6 @@ $(function () {
                             0, 0, -1, 0],
               "Perspective Projection Test #3");
   })
+
+  // JD: 6(b)
 });

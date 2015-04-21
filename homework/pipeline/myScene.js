@@ -56,6 +56,7 @@
 
   var sphere1 = new Shape ({
               color: { r: 0.0, g: 1.0, b: 0.0 },
+              // JD: 1(a)
               vertices: Shape.sphere().toRawLineArray(),
               mode: gl.LINES,
               transformations: { sx: 2.0, sy: 2.0, sz: 2.0 }
@@ -63,6 +64,7 @@
 
   var cube1 = new Shape ({
               color: { r: 0.0, g: 0.0, b: 1.0 },
+              // JD: 3(a)
               vertices: Shape.cube().toRawLineArray(),
               mode: gl.LINES,
               transformations: { sx: 1, sy: 1, sz: 1, tx: -2.5, ty: 0, tz: 2 }
@@ -86,6 +88,7 @@
   console.log(shapesToDraw);
   
   // Pass the vertices to WebGL.
+  // JD: 2(a)
   passVertices = function (shapesToDraw) {
     var i, maxi, j, maxj;
 
@@ -158,9 +161,11 @@
   scaleMatrix = gl.getUniformLocation(shaderProgram, "scaleMatrix");
   instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
 
+  // JD: 1(b)
   // Initialize scale matrix
   gl.uniformMatrix4fv(scaleMatrix, 
-      gl.FALSE, 
+      gl.FALSE,
+      // JD: 2(b)
       new Float32Array(Matrix3D.getScaleMatrix(0.25, 0.25, 0.25).getElements())
   );
 
@@ -173,6 +178,7 @@
   /*
    * Displays an individual object.
    */
+  // JD: 2(a)
   drawObject = function (shape) {
     var i,
         instanceMat = new Matrix3D();
@@ -196,6 +202,7 @@
     gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
     gl.drawArrays(shape.mode, 0, shape.vertices.length / 3);
 
+    // JD: 3(b)
     if (shape.children) {
       for (i = 0; i < shape.children.length; i++) {
         drawObject(shape.children[i]);
