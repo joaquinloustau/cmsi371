@@ -221,6 +221,40 @@ var Shape = (function () {
     return result;
   },
 
+
+  /*
+   * Displays an individual object.
+   */
+  shape.prototype.draw = function (currentTransform, instanceMatrix, vertexColor, vertexPosition, gl) {
+    var i,
+        instanceMat = new Matrix3D();
+
+    instanceMat = currentTransform.multiplication(instanceMat.getInstanceMatrix(this.transformations));
+    //console.log(shape.transformations);
+    //console.log(instanceMatrix);
+
+    //Set instance Matrix
+    gl.uniformMatrix4fv(instanceMatrix,
+                        gl.FALSE,
+                        new Float32Array(instanceMat.getColumnMajorOrder().getElements())
+    );
+
+    // Set the varying colors.
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+    gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
+
+    // Set the varying vertex coordinates.
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
+    gl.drawArrays(this.mode, 0, this.vertices.length / 3);
+
+    if (this.children) {
+      for (i = 0; i < this.children.length; i++) {
+        this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, gl);
+      }
+    }
+  };
+
   /*
    * Utility function for turning indexed vertices into a "raw" coordinate array
    * arranged as line segments.

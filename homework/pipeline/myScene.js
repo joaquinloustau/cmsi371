@@ -54,35 +54,48 @@
   gl.clearColor(0.0, 0.0, 0.0, 0.0);
   gl.viewport(0, 0, canvas.width, canvas.height);
 
-  var sphere1 = new Shape ({
-              color: { r: 0.0, g: 1.0, b: 0.0 },
-              vertices: Shape.sphere().toRawLineArray(),
-              mode: gl.LINES,
-              transformations: { sx: 2.0, sy: 2.0, sz: 2.0 }
-              });
+  shapesToDraw = [
+    new Shape ({
+        color: { r: 0.0, g: 1.0, b: 0.0 },
+        vertices: Shape.sphere().toRawLineArray(),
+        mode: gl.LINES,
+        transformations: { sx: 2.0, sy: 2.0, sz: 2.0 }
+    }),
 
-  var cube1 = new Shape ({
-              color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.cube().toRawLineArray(),
-              mode: gl.LINES,
-              transformations: { sx: 1, sy: 1, sz: 1, tx: -2.5, ty: 0, tz: 2 }
-              });
+    new Shape ({
+        color: { r: 0.0, g: 0.0, b: 1.0 },
+        vertices: Shape.cube().toRawLineArray(),
+        mode: gl.LINES,
+        transformations: { sx: 1, sy: 1, sz: 1, tx: -2.5, ty: 0, tz: 2 }
+    }),
 
-  var shape3 = new Shape({
-              color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.icosahedron().toRawLineArray(),
-              mode: gl.LINES,
-              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
-              children: [ new Shape({
-                color: { r: 1.0, g: 0.0, b: 0.0 },
-                vertices: Shape.triangularPrism().toRawTriangleArray(),
-                mode: gl.TRIANGLES,
-                transformations: { sx: 1, sy: 1, sz: 1, tx: 0, ty: -2.5, tz: 0, angle: 40, rx: 1, ry: 2 , rz: 1 }
-                })]
-              });
+    new Shape({
+        color: { r: 0.0, g: 0.0, b: 1.0 },
+        vertices: Shape.icosahedron().toRawLineArray(),
+        mode: gl.LINES,
+        transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+        children: [ 
+          new Shape({
+            color: { r: 1.0, g: 0.0, b: 0.0 },
+            vertices: Shape.triangularPrism().toRawTriangleArray(),
+            mode: gl.TRIANGLES,
+            transformations: { 
+              sx: 1, sy: 1, sz: 1,
+              tx: 0, ty: -2.5, tz: 0,
+              angle: 40, rx: 1, ry: 2 , rz: 1 
+            }
+          }),
 
-  // Build the objects to display.
-  shapesToDraw = [sphere1, cube1, shape3];
+          new Shape ({
+            color: { r: 0.0, g: 1.0, b: 1.0},
+            vertices: Shape.cube().toRawTriangleArray(),
+            mode: gl.TRIANGLES,
+            transformations: { sx: 0.5, sy: 0.5, sz: 0.5, tx: -2.5, ty: 0, tz: 2}
+          })
+        ]
+    })
+  ];
+
   console.log(shapesToDraw);
   
   // Pass the vertices to WebGL.
@@ -171,39 +184,6 @@
   );
 
   /*
-   * Displays an individual object.
-   */
-  drawObject = function (shape) {
-    var i,
-        instanceMat = new Matrix3D();
-
-    instanceMat = instanceMat.getInstanceMatrix(shape.transformations);
-    //console.log(shape.transformations);
-    //console.log(instanceMatrix);
-
-    //Set instance Matrix
-    gl.uniformMatrix4fv(instanceMatrix,
-                        gl.FALSE,
-                        new Float32Array(instanceMat.getColumnMajorOrder().getElements())
-    );
-
-    // Set the varying colors.
-    gl.bindBuffer(gl.ARRAY_BUFFER, shape.colorBuffer);
-    gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-
-    // Set the varying vertex coordinates.
-    gl.bindBuffer(gl.ARRAY_BUFFER, shape.buffer);
-    gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(shape.mode, 0, shape.vertices.length / 3);
-
-    if (shape.children) {
-      for (i = 0; i < shape.children.length; i++) {
-        drawObject(shape.children[i]);
-      }
-    }
-  };
-
-  /*
    * Displays the scene.
    */
   drawScene = function () {
@@ -216,7 +196,7 @@
 
     // Display the objects.
     for (i = 0, maxi = shapesToDraw.length; i < maxi; i += 1) {
-      drawObject(shapesToDraw[i]);
+      shapesToDraw[i].draw(new Matrix3D(), instanceMatrix, vertexColor, vertexPosition, gl);
     }
 
     // All done.
