@@ -187,44 +187,6 @@
   );
 
   /*
-<<<<<<< HEAD
-=======
-   * Displays an individual object.
-   */
-  // JD: 2(a)
-  drawObject = function (shape) {
-    var i,
-        instanceMat = new Matrix3D();
-
-    instanceMat = instanceMat.getInstanceMatrix(shape.transformations);
-    //console.log(shape.transformations);
-    //console.log(instanceMatrix);
-
-    //Set instance Matrix
-    gl.uniformMatrix4fv(instanceMatrix,
-                        gl.FALSE,
-                        new Float32Array(instanceMat.getColumnMajorOrder().getElements())
-    );
-
-    // Set the varying colors.
-    gl.bindBuffer(gl.ARRAY_BUFFER, shape.colorBuffer);
-    gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-
-    // Set the varying vertex coordinates.
-    gl.bindBuffer(gl.ARRAY_BUFFER, shape.buffer);
-    gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(shape.mode, 0, shape.vertices.length / 3);
-
-    // JD: 3(b)
-    if (shape.children) {
-      for (i = 0; i < shape.children.length; i++) {
-        drawObject(shape.children[i]);
-      }
-    }
-  };
-
-  /*
->>>>>>> b958673dfadec0e4e6ecaf57ccdf3e97f907ff97
    * Displays the scene.
    */
   drawScene = function () {
