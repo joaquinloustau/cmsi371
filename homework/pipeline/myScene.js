@@ -12,9 +12,6 @@
     // This variable stores 3D model information.
     shapesToDraw,
 
-    //Function that passes the shape vertices to WebGL
-    passVertices,
-
     // The shader program to use.
     shaderProgram,
 
@@ -31,9 +28,6 @@
     instanceMatrix,
     vertexPosition,
     vertexColor,
-
-    // An individual "draw object" function.
-    drawObject,
 
     // The big "draw scene" function.
     drawScene,
@@ -55,83 +49,63 @@
   gl.viewport(0, 0, canvas.width, canvas.height);
 
   shapesToDraw = [
-    new Shape ({
-        color: { r: 0.0, g: 1.0, b: 0.0 },
-        vertices: Shape.sphere().toRawLineArray(),
-        mode: gl.LINES,
-        transformations: { sx: 2.0, sy: 2.0, sz: 2.0 }
-    }),
+    Shape.sphere()
+          .configure({
+            color: { r: 0.0, g: 1.0, b: 0.0 },
+            vertices: Shape.sphere().toRawLineArray(),
+            mode: gl.LINES,
+            transformations: { sx: 2.0, sy: 2.0, sz: 2.0 }
+          }
+    ),
 
-    new Shape ({
-        color: { r: 0.0, g: 0.0, b: 1.0 },
-        vertices: Shape.cube().toRawLineArray(),
-        mode: gl.LINES,
-        transformations: { sx: 1, sy: 1, sz: 1, tx: -2.5, ty: 0, tz: 2 }
-    }),
-
-    new Shape({
-        color: { r: 0.0, g: 0.0, b: 1.0 },
-        vertices: Shape.icosahedron().toRawLineArray(),
-        mode: gl.LINES,
-        transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
-        children: [ 
-          new Shape({
-            color: { r: 1.0, g: 0.0, b: 0.0 },
-            vertices: Shape.triangularPrism().toRawTriangleArray(),
-            mode: gl.TRIANGLES,
+    Shape.cube()
+          .configure({
+            color: { r: 0.0, g: 0.0, b: 1.0 },
+            vertices: Shape.cube().toRawLineArray(),
+            mode: gl.LINES,
             transformations: { 
               sx: 1, sy: 1, sz: 1,
-              tx: 0, ty: -2.5, tz: 0,
-              angle: 40, rx: 1, ry: 2 , rz: 1 
-            }
-          }),
+              tx: -2.5, ty: 0, tz: 2 }
+          }
+    ),
 
-          new Shape ({
-            color: { r: 0.0, g: 1.0, b: 1.0},
-            vertices: Shape.cube().toRawTriangleArray(),
-            mode: gl.TRIANGLES,
-            transformations: { sx: 0.5, sy: 0.5, sz: 0.5, tx: -2.5, ty: 0, tz: 2}
-          })
-        ]
+    Shape.icosahedron()
+          .configure({
+            color: { r: 0.0, g: 0.0, b: 1.0 },
+            vertices: Shape.icosahedron().toRawLineArray(),
+            mode: gl.LINES,
+            transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+            children: [ 
+              Shape.triangularPrism()
+                    .configure({
+                      color: { r: 1.0, g: 0.0, b: 0.0 },
+                      vertices: Shape.triangularPrism().toRawTriangleArray(),
+                      mode: gl.TRIANGLES,
+                      transformations: { 
+                        sx: 1, sy: 1, sz: 1,
+                        tx: 0, ty: -2.5, tz: 0,
+                        angle: 40, rx: 1, ry: 2 , rz: 1 
+                      }
+                    }
+              ),
+
+              Shape.cube()
+                    .configure({
+                      color: { r: 0.0, g: 1.0, b: 1.0},
+                      vertices: Shape.cube().toRawTriangleArray(),
+                      mode: gl.TRIANGLES,
+                      transformations: { 
+                        sx: 0.5, sy: 0.5, sz: 0.5,
+                        tx: -2.5, ty: 0, tz: 2
+                      }
+                    }
+              )
+            ]
     })
   ];
 
   console.log(shapesToDraw);
   
-  // Pass the vertices to WebGL.
-  // JD: 2(a)
-  passVertices = function (shapesToDraw) {
-    var i, maxi, j, maxj;
-
-    for (i = 0, maxi = shapesToDraw.length; i < maxi; i += 1) {
-      shapesToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
-          shapesToDraw[i].vertices);
-
-      if (!shapesToDraw[i].colors) {
-        // If we have a single color, we expand that into an array
-        // of the same color over and over.
-        shapesToDraw[i].colors = [];
-        for (j = 0, maxj = shapesToDraw[i].vertices.length / 3;
-            j < maxj; j += 1) {
-          shapesToDraw[i].colors = shapesToDraw[i].colors.concat(
-            shapesToDraw[i].color.r,
-            shapesToDraw[i].color.g,
-            shapesToDraw[i].color.b
-          );
-        }
-      }
-      shapesToDraw[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
-          shapesToDraw[i].colors);
-
-      // Look for nested shapesToDraw' vertices to pass. Also checks to make
-      // sure the children array isn't empty
-      if (shapesToDraw[i].children && shapesToDraw[i].children.length !== 0) {
-        passVertices(shapesToDraw[i].children);
-      }
-    }
-  }
-  
-
   // Initialize the shaders.
   shaderProgram = GLSLUtilities.initSimpleShaderProgram(
     gl,
@@ -206,9 +180,13 @@
     gl.flush();
   };
 
-  // Draw the initial scene.
-  passVertices(shapesToDraw);
+  // Pass all the vertices to WebGL and draw the initial scene.
+  var k, l;
+  for (k = 0, l = shapesToDraw.length; k < l; k += 1) {
+    shapesToDraw[k].getReadyForWebGL(gl);
+  };
   drawScene();
+
 
   // Set up the rotation toggle: clicking on the canvas does it.
   $(canvas).click(function () {

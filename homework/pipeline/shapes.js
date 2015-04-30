@@ -7,10 +7,13 @@ var Shape = (function () {
 
   //Define the constructor
   var shape = function (options) {
-    options.transformations = options.transformations || {};
-
     this.vertices = options.vertices || [];
     this.indices = options.indices || [];
+  };
+
+  shape.prototype.configure = function (options) {
+    options.transformations = options.transformations || {};
+    this.vertices = options.vertices || [];
     this.color = options.color || { r: 1.0, g: 0.0, b: 0.0 };
     this.children = options.children || [];
     this.mode = options.mode;
@@ -28,7 +31,9 @@ var Shape = (function () {
 
     //Circle properties
     this.radius = options.radius || 0;
-  };
+
+    return this;
+  },
 
   /*
    * Returns the vertices for a small icosahedron.
@@ -253,7 +258,33 @@ var Shape = (function () {
         this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, gl);
       }
     }
-  };
+  },
+
+  shape.prototype.getReadyForWebGL = function (gl) {
+    var i, j, maxj;
+      this.buffer = GLSLUtilities.initVertexBuffer(gl,this.vertices);
+
+      if (!this.colors) {
+        // If we have a single color, we expand that into an array
+        // of the same color over and over.
+        this.colors = [];
+        for (j = 0, maxj = this.vertices.length / 3;
+            j < maxj; j += 1) {
+          this.colors = this.colors.concat(
+            this.color.r,
+            this.color.g,
+            this.color.b
+          );
+        }
+      }
+      this.colorBuffer = GLSLUtilities.initVertexBuffer(gl,this.colors);
+
+      if (this.children) {
+        for (i = 0; i < this.children.length; i++) {
+          this.children[i].getReadyForWebGL(gl);
+        }
+      }
+  },
 
   /*
    * Utility function for turning indexed vertices into a "raw" coordinate array
