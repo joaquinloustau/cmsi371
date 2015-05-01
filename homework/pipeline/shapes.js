@@ -10,6 +10,7 @@ var Shape = (function () {
     this.vertices = options.vertices || [];
     this.indices = options.indices || [];
     this.children = options.children || [];
+    this.radius = options.radius || 0;
   };
 
   shape.prototype.configure = function (options) {
@@ -33,8 +34,10 @@ var Shape = (function () {
     this.transformations.rz = options.transformations.rz || 1;
 
     //Circle properties
-    this.radius = options.radius || 0;
-
+    if (options.radius) {
+      this.radius = options.radius;
+    }
+    
     return this;
   },
 
@@ -238,7 +241,7 @@ var Shape = (function () {
         instanceMat = new Matrix3D();
 
     if (this.vertices.length != 0) {
-      instanceMat = currentTransform.multiplication(instanceMat.getInstanceMatrix(this.transformations));
+      instanceMat = currentTransform.multiply(instanceMat.getInstanceMatrix(this.transformations));
 
       //Set instance Matrix
       gl.uniformMatrix4fv(instanceMatrix,
@@ -249,7 +252,6 @@ var Shape = (function () {
       // Set the varying colors.
       gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
       gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-
       // Set the varying vertex coordinates.
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
       gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);

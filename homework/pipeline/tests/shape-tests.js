@@ -6,6 +6,7 @@ $(function () {
   // This suite checks instantiation basics.
   test("Creation and properties", function () {
     var s1 = new Shape({});
+    s1.configure({});
 
     deepEqual(s1.vertices, [],
           "Default vertices value");
@@ -30,13 +31,13 @@ $(function () {
   });
 
   test("Icosahedron", function () {
-    var s2 = new Shape({
-              color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.icosahedron().vertices,
-              indices: Shape.icosahedron().indices,
-              mode: 1,
-              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
-            });
+    var s2 = Shape.icosahedron()
+              .configure({
+                color: { r: 0.0, g: 0.0, b: 1.0 },
+                mode: 1,
+                transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+              }
+            );
 
     deepEqual(s2.vertices,[[ -0.525731112119133606, 0.0, 0.850650808352039932 ],
                           [ 0.525731112119133606, 0.0, 0.850650808352039932 ],
@@ -76,13 +77,13 @@ $(function () {
   });
 
   test("Cube", function () {
-    var s3 = new Shape({
-              color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.cube().vertices,
-              indices: Shape.cube().indices,
-              mode: 1,
-              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
-            });
+    var s3 = Shape.cube()
+              .configure({
+                color: { r: 0.0, g: 0.0, b: 1.0 },
+                mode: 1,
+                transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+              }
+            );
 
     deepEqual(s3.vertices, [[0.5, 0.5, 0.5],
                           [0.5, 0.5, -0.5],
@@ -110,13 +111,13 @@ $(function () {
   });
 
   test("Triangular Prism", function () {
-    var s4 = new Shape({
-              color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.triangularPrism().vertices,
-              indices: Shape.triangularPrism().indices,
-              mode: 1,
-              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
-            });
+    var s4 = Shape.triangularPrism()
+              .configure({
+                color: { r: 0.0, g: 0.0, b: 1.0 },
+                mode: 1,
+                transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+              }
+            );
 
     deepEqual(s4.vertices, [[ 0.75, 0.0, -0.75 ],
                             [ -0.75, 0.0, -0.75 ],
@@ -138,13 +139,11 @@ $(function () {
   });
 
   test("Sphere", function () {
-    var s5 = new Shape({
-              color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.sphere().vertices,
-              indices: Shape.sphere().indices,
-              radius: Shape.sphere().radius,
-              mode: 1,
-              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+    var s5 = Shape.sphere()
+              .configure({
+                color: { r: 0.0, g: 0.0, b: 1.0 },
+                mode: 1,
+                transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
             });
 
     deepEqual(s5.radius, 0.8,
@@ -153,26 +152,46 @@ $(function () {
 
   test("Composite or group objects", function () {
     var s6  = new Shape({
-              color: { r: 0.0, g: 0.0, b: 1.0 },
-              vertices: Shape.triangularPrism().vertices,
-              indices: Shape.triangularPrism().indices,
-              mode: 1,
-              transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
-              children: [ new Shape({
-                color: { r: 1.0, g: 0.0, b: 0.0 },
-                vertices: Shape.cube().vertices,
-                mode: 1,
-                transformations: { sx: 1, sy: 1, sz: 1, tx: 0, ty: -2.5, tz: 0, angle: 40, rx: 1, ry: 2 , rz: 1 },
-                children: [ new Shape({
-                color: { r: 0.0, g: 0.0, b: 0.0 },
-                vertices: Shape.triangularPrism().toRawTriangleArray(),
-                mode: 1,
-                transformations: { sx: 2, sy: 1, sz: 1, tx: 0, ty: -2.5, tz: 0, angle: 40, rx: 1, ry: 2 , rz: 1 }
-                })]
-              })]
+              children: [
+                Shape.triangularPrism()
+                  .configure({
+                    color: { r: 0.0, g: 0.0, b: 1.0 },
+                    mode: 1,
+                    transformations: { tx: 2.0, ty: 2.0, tz: 0.0 },
+                    children: [ 
+                      Shape.cube()
+                        .configure({
+                          color: { r: 1.0, g: 0.0, b: 0.0 },
+                          vertices: Shape.cube().vertices,
+                          mode: 1,
+                          transformations: { 
+                            sx: 1, sy: 1, sz: 1,
+                            tx: 0, ty: -2.5, tz: 0,
+                            angle: 40, rx: 1, ry: 2 , rz: 1 
+                          },
+                          children: [ 
+                            Shape.triangularPrism()
+                              .configure({
+                                color: { r: 0.0, g: 0.0, b: 0.0 },
+                                mode: 1,
+                                transformations: { 
+                                  sx: 2, sy: 1, sz: 1,
+                                  tx: 0, ty: -2.5, tz: 0,
+                                  angle: 40, rx: 1, ry: 2 , rz: 1 
+                                }
+                              }
+                            )
+                          ]
+                        }
+                      )
+                    ]
+                  }
+                )
+              ]
             });
+             
 
-    deepEqual(s6.children[0].vertices, [[0.5, 0.5, 0.5],
+    deepEqual(s6.children[0].children[0].vertices, [[0.5, 0.5, 0.5],
                                         [0.5, 0.5, -0.5],
                                         [0.5, -0.5, 0.5],
                                         [0.5, -0.5, -0.5],
@@ -182,10 +201,10 @@ $(function () {
                                         [-0.5, -0.5, -0.5]],
           "Child vertices values");
 
-    deepEqual(s6.children[0].children[0].color.r, 0.0,
+    deepEqual(s6.children[0].children[0].children[0].color.r, 0.0,
           "Children's child color value"); 
 
-    deepEqual(s6.children[0].children[0].transformations.sx, 2,
+    deepEqual(s6.children[0].children[0].children[0].transformations.sx, 2,
           "Children's child scaling transformation value");      
   });
 
