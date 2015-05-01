@@ -26,6 +26,7 @@
     translationMatrix,
     initialTransform,
     instanceMatrix,
+    projectionMatrix,
     vertexPosition,
     vertexColor,
 
@@ -146,7 +147,8 @@
   scaleMatrix = gl.getUniformLocation(shaderProgram, "scaleMatrix");
   instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
 
-  // JD: 1(b)
+  projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+
   // Initialize scale matrix
   gl.uniformMatrix4fv(scaleMatrix, 
       gl.FALSE,
@@ -158,6 +160,20 @@
   gl.uniformMatrix4fv(translationMatrix, 
       gl.FALSE, 
       new Float32Array(Matrix3D.getTranslationMatrix(0, 0, 0).getElements())
+  );
+
+  // Initialize projection matrix
+  gl.uniformMatrix4fv(
+    projectionMatrix,
+    gl.FALSE, 
+    new Float32Array(Matrix3D.getOrthoMatrix(
+      -2 * (canvas.width / canvas.height),
+      2 * (canvas.width / canvas.height),
+      -2,
+      1,
+      -30,
+      10
+    ).getColumnMajorOrder().getElements())
   );
 
   /*

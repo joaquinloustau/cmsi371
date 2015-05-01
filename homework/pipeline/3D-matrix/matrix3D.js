@@ -14,7 +14,7 @@ var Matrix3D = (function () {
                     0, 0, 0, 1];
   };
 
-  matrix3D.prototype.multiplication = function (matrix2) {
+  matrix3D.prototype.multiply = function (matrix2) {
     var matrixResult = [],
         row, col, sum;
 
@@ -196,11 +196,11 @@ var Matrix3D = (function () {
   };
 
   matrix3D.prototype.getInstanceMatrix = function (transformations) {
-    return (this.multiplication(Matrix3D.getTranslationMatrix(
+    return (this.multiply(Matrix3D.getTranslationMatrix(
       transformations.tx, transformations.ty, transformations.tz)
-      ).multiplication(Matrix3D.getScaleMatrix(
+      ).multiply(Matrix3D.getScaleMatrix(
         transformations.sx, transformations.sy, transformations.sz)
-      ).multiplication(Matrix3D.getRotationMatrix(
+      ).multiply(Matrix3D.getRotationMatrix(
         transformations.angle, transformations.rx, transformations.ry, transformations.rz))
     );
   };

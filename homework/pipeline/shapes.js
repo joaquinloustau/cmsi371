@@ -37,7 +37,7 @@ var Shape = (function () {
     if (options.radius) {
       this.radius = options.radius;
     }
-    
+
     return this;
   },
 
@@ -252,6 +252,7 @@ var Shape = (function () {
       // Set the varying colors.
       gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
       gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
+
       // Set the varying vertex coordinates.
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
       gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
@@ -303,7 +304,7 @@ var Shape = (function () {
    */
 
   shape.prototype.toRawLineArray = function () {
-    var result = [],
+    var result = [],  
         i,
         j,
         maxi,
