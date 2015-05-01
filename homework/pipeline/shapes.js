@@ -9,11 +9,14 @@ var Shape = (function () {
   var shape = function (options) {
     this.vertices = options.vertices || [];
     this.indices = options.indices || [];
+    this.children = options.children || [];
   };
 
   shape.prototype.configure = function (options) {
     options.transformations = options.transformations || {};
-    this.vertices = options.vertices || [];
+    if (options.children) {
+      this.children = options.children;
+    }
     this.color = options.color || { r: 1.0, g: 0.0, b: 0.0 };
     this.children = options.children || [];
     this.mode = options.mode;
@@ -234,25 +237,25 @@ var Shape = (function () {
     var i,
         instanceMat = new Matrix3D();
 
-    instanceMat = currentTransform.multiplication(instanceMat.getInstanceMatrix(this.transformations));
-    //console.log(shape.transformations);
-    //console.log(instanceMatrix);
+    if (this.vertices.length != 0) {
+      instanceMat = currentTransform.multiplication(instanceMat.getInstanceMatrix(this.transformations));
 
-    //Set instance Matrix
-    gl.uniformMatrix4fv(instanceMatrix,
-                        gl.FALSE,
-                        new Float32Array(instanceMat.getColumnMajorOrder().getElements())
-    );
+      //Set instance Matrix
+      gl.uniformMatrix4fv(instanceMatrix,
+                          gl.FALSE,
+                          new Float32Array(instanceMat.getColumnMajorOrder().getElements())
+      );
 
-    // Set the varying colors.
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-    gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
+      // Set the varying colors.
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+      gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
 
-    // Set the varying vertex coordinates.
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-    gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-    gl.drawArrays(this.mode, 0, this.vertices.length / 3);
-
+      // Set the varying vertex coordinates.
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+      gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
+      gl.drawArrays(this.mode, 0, this.rawVertices.length / 3);
+    }
+    
     if (this.children) {
       for (i = 0; i < this.children.length; i++) {
         this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, gl);
@@ -262,28 +265,34 @@ var Shape = (function () {
 
   shape.prototype.getReadyForWebGL = function (gl) {
     var i, j, maxj;
-      this.buffer = GLSLUtilities.initVertexBuffer(gl,this.vertices);
 
-      if (!this.colors) {
-        // If we have a single color, we expand that into an array
-        // of the same color over and over.
-        this.colors = [];
-        for (j = 0, maxj = this.vertices.length / 3;
-            j < maxj; j += 1) {
-          this.colors = this.colors.concat(
-            this.color.r,
-            this.color.g,
-            this.color.b
-          );
-        }
+      if (this.vertices != 0) {
+        // this.buffer = GLSLUtilities.initVertexBuffer(gl,this.vertices);
+        this.rawVertices = (this.mode === gl.LINES) ? this.toRawLineArray() : this.toRawTriangleArray();
+        this.buffer = GLSLUtilities.initVertexBuffer(gl,this.rawVertices);
+
+        if (!this.colors) {
+          // If we have a single color, we expand that into an array
+          // of the same color over and over.
+          this.colors = [];
+          // for (j = 0, maxj = this.vertices.length / 3;
+          for (j = 0, maxj = this.rawVertices.length / 3;
+              j < maxj; j += 1) {
+            this.colors = this.colors.concat(
+              this.color.r,
+              this.color.g,
+              this.color.b
+            );
+          }
       }
       this.colorBuffer = GLSLUtilities.initVertexBuffer(gl,this.colors);
-
-      if (this.children) {
-        for (i = 0; i < this.children.length; i++) {
-          this.children[i].getReadyForWebGL(gl);
-        }
+    }
+     
+    if (this.children) {
+      for (i = 0; i < this.children.length; i++) {
+        this.children[i].getReadyForWebGL(gl);
       }
+    }
   },
 
   /*

@@ -77,7 +77,7 @@ var Vector = (function () {
         return result;
     };
 
-    // Scalar multiplication and division.
+    // Scalar multiply and division.
     vector.prototype.multiply = function (s) {
         var result = new Vector(),
             i,
