@@ -11,10 +11,12 @@ var Shape = (function () {
     this.indices = options.indices || [];
     this.children = options.children || [];
     this.radius = options.radius || 0;
+    this.transformations = options.transformations || {};
   };
 
   shape.prototype.configure = function (options) {
     options.transformations = options.transformations || {};
+
     if (options.children) {
       this.children = options.children;
     }
@@ -239,6 +241,8 @@ var Shape = (function () {
   shape.prototype.draw = function (currentTransform, instanceMatrix, vertexColor, vertexPosition, gl) {
     var i,
         instanceMat = new Matrix3D();
+        //instanceMat = currentTransform.multiply(instanceMat.getInstanceMatrix(this.transformations));
+
 
     if (this.vertices.length != 0) {
       instanceMat = currentTransform.multiply(instanceMat.getInstanceMatrix(this.transformations));
@@ -259,6 +263,7 @@ var Shape = (function () {
       gl.drawArrays(this.mode, 0, this.rawVertices.length / 3);
     }
     
+
     if (this.children) {
       for (i = 0; i < this.children.length; i++) {
         this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, gl);
@@ -269,8 +274,7 @@ var Shape = (function () {
   shape.prototype.getReadyForWebGL = function (gl) {
     var i, j, maxj;
 
-      if (this.vertices != 0) {
-        // this.buffer = GLSLUtilities.initVertexBuffer(gl,this.vertices);
+      if (this.vertices.length != 0) {
         this.rawVertices = (this.mode === gl.LINES) ? this.toRawLineArray() : this.toRawTriangleArray();
         this.buffer = GLSLUtilities.initVertexBuffer(gl,this.rawVertices);
 
@@ -278,7 +282,6 @@ var Shape = (function () {
           // If we have a single color, we expand that into an array
           // of the same color over and over.
           this.colors = [];
-          // for (j = 0, maxj = this.vertices.length / 3;
           for (j = 0, maxj = this.rawVertices.length / 3;
               j < maxj; j += 1) {
             this.colors = this.colors.concat(
@@ -291,7 +294,7 @@ var Shape = (function () {
       this.colorBuffer = GLSLUtilities.initVertexBuffer(gl,this.colors);
     }
      
-    if (this.children) {
+    if (this.children && this.children.length != 0) {
       for (i = 0; i < this.children.length; i++) {
         this.children[i].getReadyForWebGL(gl);
       }
