@@ -29,18 +29,35 @@
     projectionMatrix,
     vertexPosition,
     vertexColor,
+    texture,
+    textureCoordinate,
 
     // The big "draw scene" function.
     drawScene,
 
-  // Grab the WebGL rendering context.
-  gl = GLSLUtilities.getGL(canvas);
-  if (!gl) {
-    alert("No WebGL context found...sorry.");
+    // Grab the WebGL rendering context.
+    gl = GLSLUtilities.getGL(canvas);
+    if (!gl) {
+      alert("No WebGL context found...sorry.");
 
-    // No WebGL, no use going on...
-    return;
-  }
+      // No WebGL, no use going on...
+      return;
+    };
+
+     // Set up the texture object.
+    texture = gl.createTexture();
+    var textureImage = new Image();
+    var textureIsReady = false;
+    textureImage.onload = function () {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        //gl.generateMipmap(gl.TEXTURE_2D);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        textureIsReady = true;
+    };
+    textureImage.src = "earth.jpg";
 
   // Set up settings that will not change.  This is not "canned" into a
   // utility function because these settings really can vary from program
@@ -52,7 +69,7 @@
 
   var Earth = Shape.sphere()
               .configure({
-                mode: gl.LINES,
+                mode: gl.TRIANGLES,
                 color: { r: 0.0, g: 0.0, b: 1.0 }
               })
 
@@ -99,8 +116,11 @@
   translationMatrix = gl.getUniformLocation(shaderProgram, "translationMatrix");
   scaleMatrix = gl.getUniformLocation(shaderProgram, "scaleMatrix");
   instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
-
   projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
+
+  textureCoordinate = gl.getAttribLocation(shaderProgram, "textureCoordinate");
+  console.log(textureCoordinate);
+  gl.enableVertexAttribArray(textureCoordinate);
 
   // Initialize scale matrix
   gl.uniformMatrix4fv(scaleMatrix, 
@@ -141,7 +161,7 @@
     gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix3D.getRotationMatrix(currentRotation, 0, 1, 0).getElements()));
 
     // Display the objects.
-    shapesToDraw.draw(new Matrix3D(), instanceMatrix, vertexColor, vertexPosition, gl);
+    shapesToDraw.draw(new Matrix3D(), instanceMatrix, vertexColor, vertexPosition, texture, textureCoordinate, gl);
 
     // All done.
     gl.flush();

@@ -17,8 +17,11 @@ var Shapes = {
         longBelts = 25,
         vertices = [],
         indices = [],
+        textureVertices = [],
         top,
         bottom,
+        u,
+        v,
         x,
         y,
         z,
@@ -37,7 +40,10 @@ var Shapes = {
             x = radius * Math.cos(phi) * sinTheta;
             y = radius * cosTheta;
             z = radius * Math.sin(phi) * sinTheta;
+            u = 1 - (j / longBelts);
+            v = i / latBelts;
 
+            textureVertices.push([u, v]);
             vertices.push([x, y, z]);
         }
     }
@@ -59,7 +65,7 @@ var Shapes = {
     sphereData.latBelts = latBelts;
     sphereData.longBelts = longBelts;
     //console.log(vertices);
-    //console.log(indices);
+    console.log(indices);
 
 
 
@@ -258,9 +264,10 @@ var Shapes = {
 
             // Technically, the first value is not a vector, but v can stand for vertex
             // anyway, so...
+
+            console.log(p1);
             v0 = new Vector(p0[0], p0[1], p0[2]);
             v1 = new Vector(p1[0], p1[1], p1[2]).subtract(v0);
-            console.log(v1);
             v2 = new Vector(p2[0], p2[1], p2[2]).subtract(v0);
             normal = v1.cross(v2).unit();
 

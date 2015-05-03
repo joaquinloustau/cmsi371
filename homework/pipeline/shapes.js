@@ -11,7 +11,9 @@ var Shape = (function () {
     this.indices = options.indices || [];
     this.children = options.children || [];
     this.radius = options.radius || 0;
-    this.transformations = options.transformations || {};
+    this.transformations = options.transformations || {};   
+    this.textureCoordData = options.textureCoordData || [];
+
   };
 
   shape.prototype.configure = function (options) {
@@ -136,8 +138,11 @@ var Shape = (function () {
         longBelts = 25,
         vertices = [],
         indices = [],
+        textureCoordData = [],
         top,
         bottom,
+        u,
+        v,
         x,
         y,
         z,
@@ -156,7 +161,11 @@ var Shape = (function () {
             x = radius * Math.cos(phi) * sinTheta;
             y = radius * cosTheta;
             z = radius * Math.sin(phi) * sinTheta;
+            u = 1- (j / longBelts);
+            v = i / latBelts;
 
+            //http://learningwebgl.com/cookbook/index.php/How_to_draw_a_sphere
+            textureCoordData.push([u,v]);
             vertices.push([x, y, z]);
         }
     }
@@ -172,11 +181,15 @@ var Shape = (function () {
         }
     }
 
+    console.log(sphereData);
     sphereData.vertices = vertices;
     sphereData.indices = indices;
     sphereData.radius = radius;
     sphereData.latBelts = latBelts;
     sphereData.longBelts = longBelts;
+    sphereData.textureCoordData = textureCoordData;
+
+    console.log(sphereData);
 
 
     return new shape(sphereData);
@@ -238,11 +251,10 @@ var Shape = (function () {
   /*
    * Displays an individual object.
    */
-  shape.prototype.draw = function (currentTransform, instanceMatrix, vertexColor, vertexPosition, gl) {
+  shape.prototype.draw = function (currentTransform, instanceMatrix, vertexColor, vertexPosition, texture, textureCoordinate, gl) {
     var i,
         instanceMat = new Matrix3D();
         //instanceMat = currentTransform.multiply(instanceMat.getInstanceMatrix(this.transformations));
-
 
     if (this.vertices.length != 0) {
       instanceMat = currentTransform.multiply(instanceMat.getInstanceMatrix(this.transformations));
@@ -261,12 +273,18 @@ var Shape = (function () {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
       gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
       gl.drawArrays(this.mode, 0, this.rawVertices.length / 3);
-    }
+
+      // Set the texture varialbes.
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinateBuffer);
+      gl.vertexAttribPointer(textureCoordinate, 2, gl.FLOAT, false, 0, 0);
+  }
     
 
     if (this.children) {
       for (i = 0; i < this.children.length; i++) {
-        this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, gl);
+        this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, texture, textureCoordinate, gl);
       }
     }
   },
@@ -292,6 +310,7 @@ var Shape = (function () {
           }
       }
       this.colorBuffer = GLSLUtilities.initVertexBuffer(gl,this.colors);
+      this.textureCoordinateBuffer = GLSLUtilities.initVertexBuffer(gl, this.textureCoordData);
     }
      
     if (this.children && this.children.length != 0) {

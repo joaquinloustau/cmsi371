@@ -48,6 +48,7 @@
 
       // Note this new additional output.
       attribute vec3 vertexColor;
+      attribute vec2 textureCoordinate;
       varying vec4 finalVertexColor;
 
       //Matrices
@@ -57,8 +58,13 @@
       uniform mat4 instanceMatrix;
       uniform mat4 projectionMatrix;
 
+      // Not surprisingly, we have varying texture coordinates for the fragment shader.
+      varying vec2 fragmentTextureCoordinate;
 
       void main(void) {
+        // Texture coordinates are a pass-through.
+        fragmentTextureCoordinate = textureCoordinate;
+
         gl_Position = scaleMatrix * rotationMatrix * translationMatrix * instanceMatrix * vec4(vertexPosition, 1.0);;
         finalVertexColor = vec4(vertexColor, 1.0);
       }
@@ -71,6 +77,10 @@
       #endif
 
       varying vec4 finalVertexColor;
+
+      // And textures!
+      varying vec2 fragmentTextureCoordinate;
+      uniform sampler2D sampler;
 
       void main(void) {
         // We vary the color based on the fragment's z coordinate,

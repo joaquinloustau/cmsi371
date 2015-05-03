@@ -193,7 +193,7 @@
         gl.bindTexture(gl.TEXTURE_2D, null);
         textureIsReady = true;
     };
-    textureImage.src = "mc-grass.jpg";
+    textureImage.src = "earth.jpg";
 
     // Build the objects to display.
     objectsToDraw = [
@@ -214,27 +214,7 @@
             // One more array to associate with our vertices---texture coordinates!
             // Here we generate them raw...some design thought may be needed in order
             // to create/manage them in a more convenient way.
-            textureCoordinates: (function () {
-                var result = [];
-                for (var latNumber = 0; latNumber <= latitudeBands; latNumber++) {
-                  var theta = latNumber * Math.PI / latitudeBands;
-                  var sinTheta = Math.sin(theta);
-                  var cosTheta = Math.cos(theta);
-
-                  for (var longNumber = 0; longNumber <= longitudeBands; longNumber++) {
-                    var phi = longNumber * 2 * Math.PI / longitudeBands;
-                    var sinPhi = Math.sin(phi);
-                    var cosPhi = Math.cos(phi);
-
-                    var u = 1 - (longNumber / longitudeBands);
-                    var v = 1 - (latNumber / latitudeBands);
-
-                    result.push(u);
-                    result.push(v);
-                  }
-                }
-                return result;
-            })(),
+            textureCoordinates: mesh.textureVertices,
 
             mode: gl.TRIANGLES
         }
