@@ -13,6 +13,7 @@ var Shape = (function () {
     this.radius = options.radius || 0;
     this.transformations = options.transformations || {};   
     this.textureCoordData = options.textureCoordData || [];
+    //this.gl = options.gl || {};
 
   };
 
@@ -22,9 +23,11 @@ var Shape = (function () {
     if (options.children) {
       this.children = options.children;
     }
+
     this.color = options.color || { r: 1.0, g: 0.0, b: 0.0 };
     this.children = options.children || [];
     this.mode = options.mode;
+    this.normals = options.normals || [];
     this.transformations = {};
     this.transformations.tx = options.transformations.tx || 0;
     this.transformations.ty = options.transformations.ty || 0;
@@ -36,7 +39,33 @@ var Shape = (function () {
     this.transformations.rx = options.transformations.rx || 1;
     this.transformations.ry = options.transformations.ry || 1;
     this.transformations.rz = options.transformations.rz || 1;
+    
+    /*console.log('options.texture: ' + options.textureSrc);
+    console.log('options.gl: ' + options.gl);
+    if (options.textureSrc && options.gl) {
+      this.textureSrc = options.textureSrc;
+      this.gl = options.gl;
+      console.log('this.texture: ' + this.textureSrc);
+      console.log('this.gl: ' + this.gl);
+    }
 
+    if (this.textureSrc && this.gl) {
+      this.texture = this.gl.createTexture();
+      var textureImage = new Image();
+      var textureIsReady = false;
+      textureImage.onload = function () {
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
+        this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, textureImage);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
+        this.gl.generateMipmap(this.gl.TEXTURE_2D);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        textureIsReady = true;
+      };
+      textureImage.src = this.textureSrc;
+    }*/
+    
     //Circle properties
     if (options.radius) {
       this.radius = options.radius;
@@ -130,67 +159,53 @@ var Shape = (function () {
   //Used learningwebgl.com Lesson 11 – spheres, rotation matrices, and mouse events
   shape.sphere = function () {
     var radius = 0.8,
-        theta,
-        sinTheta,
-        cosTheta,
-        phi,
         latBelts = 25,
         longBelts = 25,
         vertices = [],
         indices = [],
         textureCoordData = [],
-        top,
-        bottom,
-        u,
-        v,
-        x,
-        y,
-        z,
-        i,
-        j,
         sphereData = {};
 
+    var entre = 0;
     // This creates the vertices for the circle.
-    for (i = 0; i < latBelts + 1; i += 1) {
-        theta = (i * Math.PI) / latBelts;
-        sinTheta = Math.sin(theta);
-        cosTheta = Math.cos(theta);
+    for (var latNumber = 0; latNumber <= latBelts; latNumber ++) {
+        var theta = latNumber * Math.PI / latBelts;
+        var sinTheta = Math.sin(theta);
+        var cosTheta = Math.cos(theta);
+        entre++;
 
-        for (j = 0; j < longBelts + 1; j += 1) {
-            phi = (j * 2 * Math.PI) / longBelts;
-            x = radius * Math.cos(phi) * sinTheta;
-            y = radius * cosTheta;
-            z = radius * Math.sin(phi) * sinTheta;
-            u = 1- (j / longBelts);
-            v = i / latBelts;
+        for (var longNumber = 0; longNumber <= longBelts; longNumber ++) {
+            var phi = longNumber * 2 * Math.PI / longBelts;
+            var sinPhi = Math.sin(phi);
+            var cosPhi = Math.cos(phi);
+            var u = 1 - (longNumber / longBelts);
+            var v = 1 - (latNumber / latBelts);
 
+            var x = radius * cosPhi * sinTheta;
+            var y = radius * cosTheta;
+            var z = radius * sinPhi * sinTheta;
+           
             //http://learningwebgl.com/cookbook/index.php/How_to_draw_a_sphere
             textureCoordData.push([u,v]);
             vertices.push([x, y, z]);
         }
     }
-
-    // This creates the indices for the circle.
-    for (i = 0; i < latBelts + 1; i += 1) {
-        for (j = 0; j < longBelts + 1; j += 1) {
-            top = (i * (longBelts + 1)) + j;
-            bottom = top + longBelts + 1;
-
-            indices.push([top, bottom, top + 1]);
-            indices.push([bottom, bottom + 1, top + 1]);
-        }
+    
+    for (var latNumber = 0; latNumber < latBelts; latNumber++) {
+      for (var longNumber = 0; longNumber < longBelts; longNumber++) {
+        var first = (latNumber * (longBelts + 1)) + longNumber;
+        var second = first + longBelts + 1;
+        indices.push([first, second, first + 1]);
+        indices.push([second, second + 1, first + 1]);
+      }
     }
 
-    console.log(sphereData);
     sphereData.vertices = vertices;
     sphereData.indices = indices;
     sphereData.radius = radius;
     sphereData.latBelts = latBelts;
     sphereData.longBelts = longBelts;
     sphereData.textureCoordData = textureCoordData;
-
-    console.log(sphereData);
-
 
     return new shape(sphereData);
   },
@@ -235,10 +250,33 @@ var Shape = (function () {
         maxi,
         maxj;
 
-    for (i = 0, maxi = this.indices.length; i < maxi; i += 1) {
-      for (j = 0, maxj = this.indices[i].length; j < maxj; j += 1) {
+    for (i = 0, maxi = this.indices.length; i < maxi; i++) {
+      for (j = 0, maxj = this.indices[i].length; j < maxj; j++) {
         result = result.concat(
           this.vertices[
+            this.indices[i][j]
+          ]
+        );
+      }
+    }
+    return result;
+  },
+
+  /*
+   * Utility function for turning indexed vertices into a "raw" coordinate array
+   * arranged as triangles.
+   */
+  shape.prototype.toRawTextureTriangleArray = function () {
+    var result = [],
+        i,
+        j,
+        maxi,
+        maxj;
+
+    for (i = 0, maxi = this.indices.length; i < maxi; i++) {
+      for (j = 0, maxj = this.indices[i].length; j < maxj; j++) {
+        result = result.concat(
+          this.textureCoordData[
             this.indices[i][j]
           ]
         );
@@ -269,16 +307,16 @@ var Shape = (function () {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
       gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
 
-      // Set the varying vertex coordinates.
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-      gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-      gl.drawArrays(this.mode, 0, this.rawVertices.length / 3);
-
-      // Set the texture varialbes.
+      // Set the texture variabes.
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinateBuffer);
       gl.vertexAttribPointer(textureCoordinate, 2, gl.FLOAT, false, 0, 0);
+
+      // Set the varying vertex coordinates.
+      gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+      gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
+      gl.drawArrays(this.mode, 0, this.rawVertices.length / 3);
   }
     
 
@@ -291,9 +329,10 @@ var Shape = (function () {
 
   shape.prototype.getReadyForWebGL = function (gl) {
     var i, j, maxj;
-
+      console.log('entre getReadyForWebGL');
       if (this.vertices.length != 0) {
         this.rawVertices = (this.mode === gl.LINES) ? this.toRawLineArray() : this.toRawTriangleArray();
+        this.rawTextures = this.toRawTextureTriangleArray();
         this.buffer = GLSLUtilities.initVertexBuffer(gl,this.rawVertices);
 
         if (!this.colors) {
@@ -308,10 +347,10 @@ var Shape = (function () {
               this.color.b
             );
           }
+        }
+        this.colorBuffer = GLSLUtilities.initVertexBuffer(gl,this.colors);
+        this.textureCoordinateBuffer = GLSLUtilities.initVertexBuffer(gl, this.rawTextures);
       }
-      this.colorBuffer = GLSLUtilities.initVertexBuffer(gl,this.colors);
-      this.textureCoordinateBuffer = GLSLUtilities.initVertexBuffer(gl, this.textureCoordData);
-    }
      
     if (this.children && this.children.length != 0) {
       for (i = 0; i < this.children.length; i++) {

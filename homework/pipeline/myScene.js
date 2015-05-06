@@ -26,6 +26,7 @@
     translationMatrix,
     initialTransform,
     instanceMatrix,
+    normalVector,
     projectionMatrix,
     vertexPosition,
     vertexColor,
@@ -50,10 +51,11 @@
     var textureIsReady = false;
     textureImage.onload = function () {
         gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-        //gl.generateMipmap(gl.TEXTURE_2D);
+        gl.generateMipmap(gl.TEXTURE_2D);
         gl.bindTexture(gl.TEXTURE_2D, null);
         textureIsReady = true;
     };
@@ -66,16 +68,26 @@
   gl.clearColor(0.0, 0.0, 0.0, 0.0);
   gl.viewport(0, 0, canvas.width, canvas.height);
 
-
-  var Earth = Shape.sphere()
+  var earth = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                color: { r: 0.0, g: 0.0, b: 1.0 }
+                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                //textureSrc: "earth.jpg",
+                //gl: gl
               })
 
-  shapesToDraw = new Shape({children: [Earth]})
+  var moon = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { tx: 2.0, ty: 2.0, tz: 2.0 },
+                //textureSrc: "minion.jpg",
+                //gl: gl
+              })
 
+  console.log(earth);
+  shapesToDraw = new Shape({children: [earth, moon]})
   console.log(shapesToDraw);
+
   
   // Initialize the shaders.
   shaderProgram = GLSLUtilities.initSimpleShaderProgram(
@@ -119,7 +131,6 @@
   projectionMatrix = gl.getUniformLocation(shaderProgram, "projectionMatrix");
 
   textureCoordinate = gl.getAttribLocation(shaderProgram, "textureCoordinate");
-  console.log(textureCoordinate);
   gl.enableVertexAttribArray(textureCoordinate);
 
   // Initialize scale matrix
@@ -163,14 +174,19 @@
     // Display the objects.
     shapesToDraw.draw(new Matrix3D(), instanceMatrix, vertexColor, vertexPosition, texture, textureCoordinate, gl);
 
-    // All done.
+    // All done
     gl.flush();
   };
 
   // Pass all the vertices to WebGL and draw the initial scene.
   shapesToDraw.getReadyForWebGL(gl);
-  drawScene();
-
+  //drawScene();
+  var waitForTexture = setInterval(function () {
+    if (textureIsReady) {
+      drawScene();
+      clearInterval(waitForTexture);
+    }
+  }, 10);
 
   // Set up the rotation toggle: clicking on the canvas does it.
   $(canvas).click(function () {

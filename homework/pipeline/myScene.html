@@ -31,6 +31,7 @@
 
     <!-- Shapes is a library that generates "canned" shapes. -->
     <script src="shapes.js"></script>
+    <script src="vector/vector.js"></script>
     <script src="3D-matrix/matrix3D.js"></script>
 
     <!-- Set up shaders: we've placed the source in script elements for
@@ -45,8 +46,6 @@
       #endif
 
       attribute vec3 vertexPosition;
-
-      // Note this new additional output.
       attribute vec3 vertexColor;
       attribute vec2 textureCoordinate;
       varying vec4 finalVertexColor;
@@ -86,7 +85,8 @@
         // We vary the color based on the fragment's z coordinate,
         // which, at this point, ranges from 0 (near) to 1 (far).
         // Note the ".rgb" subselector.
-        gl_FragColor = vec4((1.0 - gl_FragCoord.z) * finalVertexColor.rgb, 1.0);
+        // gl_FragColor = vec4((1.0 - gl_FragCoord.z) * finalVertexColor.rgb, 1.0);
+        gl_FragColor =  texture2D(sampler, fragmentTextureCoordinate);
       }
     </script>
 
