@@ -39,33 +39,8 @@ var Shape = (function () {
     this.transformations.rx = options.transformations.rx || 1;
     this.transformations.ry = options.transformations.ry || 1;
     this.transformations.rz = options.transformations.rz || 1;
-    
-    /*console.log('options.texture: ' + options.textureSrc);
-    console.log('options.gl: ' + options.gl);
-    if (options.textureSrc && options.gl) {
-      this.textureSrc = options.textureSrc;
-      this.gl = options.gl;
-      console.log('this.texture: ' + this.textureSrc);
-      console.log('this.gl: ' + this.gl);
-    }
-
-    if (this.textureSrc && this.gl) {
-      this.texture = this.gl.createTexture();
-      var textureImage = new Image();
-      var textureIsReady = false;
-      textureImage.onload = function () {
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-        this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, textureImage);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_NEAREST);
-        this.gl.generateMipmap(this.gl.TEXTURE_2D);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-        textureIsReady = true;
-      };
-      textureImage.src = this.textureSrc;
-    }*/
-    
+    this.textureId = options.textureId || {};
+      
     //Circle properties
     if (options.radius) {
       this.radius = options.radius;
@@ -289,7 +264,7 @@ var Shape = (function () {
   /*
    * Displays an individual object.
    */
-  shape.prototype.draw = function (currentTransform, instanceMatrix, vertexColor, vertexPosition, texture, textureCoordinate, gl) {
+  shape.prototype.draw = function (currentTransform, instanceMatrix, vertexColor, vertexPosition, textureCoordinate, gl) {
     var i,
         instanceMat = new Matrix3D();
         //instanceMat = currentTransform.multiply(instanceMat.getInstanceMatrix(this.transformations));
@@ -308,10 +283,13 @@ var Shape = (function () {
       gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
 
       // Set the texture variabes.
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
+      
+
+      //Specifiy the texture to map onto the shape.
+      gl.bindTexture(gl.TEXTURE_2D, this.textureId);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinateBuffer);
       gl.vertexAttribPointer(textureCoordinate, 2, gl.FLOAT, false, 0, 0);
+     
 
       // Set the varying vertex coordinates.
       gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
@@ -322,7 +300,7 @@ var Shape = (function () {
 
     if (this.children) {
       for (i = 0; i < this.children.length; i++) {
-        this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, texture, textureCoordinate, gl);
+        this.children[i].draw(instanceMat, instanceMatrix, vertexColor, vertexPosition, textureCoordinate, gl);
       }
     }
   },

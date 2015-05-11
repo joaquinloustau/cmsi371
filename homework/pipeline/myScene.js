@@ -30,7 +30,10 @@
     projectionMatrix,
     vertexPosition,
     vertexColor,
-    texture,
+
+    //These variables pertain to texture mapping.
+    earthTexture,
+    moonTexture,
     textureCoordinate,
 
     // The big "draw scene" function.
@@ -45,22 +48,6 @@
       return;
     };
 
-     // Set up the texture object.
-    texture = gl.createTexture();
-    var textureImage = new Image();
-    var textureIsReady = false;
-    textureImage.onload = function () {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-        gl.generateMipmap(gl.TEXTURE_2D);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-        textureIsReady = true;
-    };
-    textureImage.src = "earth.jpg";
-
   // Set up settings that will not change.  This is not "canned" into a
   // utility function because these settings really can vary from program
   // to program.
@@ -68,24 +55,140 @@
   gl.clearColor(0.0, 0.0, 0.0, 0.0);
   gl.viewport(0, 0, canvas.width, canvas.height);
 
+  //Set up the texture objects.
+  mercuryTexture = gl.createTexture();
+  venusTexture = gl.createTexture();
+  earthTexture = gl.createTexture();
+  moonTexture = gl.createTexture();
+  marsTexture = gl.createTexture();
+  jupiterTexture = gl.createTexture();
+  saturnTexture = gl.createTexture();
+  uranusTexture = gl.createTexture();
+  neptuneTexture = gl.createTexture();
+
+  var readyTexture = 0;
+  var localHandlerFor = function (texture, textureImage) {
+    return function () {
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+      gl.generateMipmap(gl.TEXTURE_2D);
+      readyTexture++; 
+    };
+  };
+
+  var mercuryImage = new Image();
+  mercuryImage.onload = localHandlerFor(mercuryTexture, mercuryImage);
+  mercuryImage.src = "mercury.jpg";
+
+  var venusImage = new Image();
+  venusImage.onload = localHandlerFor(venusTexture, venusImage);
+  venusImage.src = "venus.jpg";
+
+  var earthImage = new Image();
+  earthImage.onload = localHandlerFor(earthTexture, earthImage);
+  earthImage.src = "earth.jpg";
+
+  var moonImage = new Image();
+  moonImage.onload = localHandlerFor(moonTexture, moonImage);
+  moonImage.src = "moon.jpg";
+
+  var marsImage = new Image();
+  marsImage.onload = localHandlerFor(marsTexture, marsImage);
+  marsImage.src = "mars.jpg";
+
+  var jupiterImage = new Image();
+  jupiterImage.onload = localHandlerFor(jupiterTexture, jupiterImage);
+  jupiterImage.src = "jupiter.jpg";
+
+  var saturnImage = new Image();
+  saturnImage.onload = localHandlerFor(saturnTexture, saturnImage);
+  saturnImage.src = "saturn.jpg";
+
+  var uranusImage = new Image();
+  uranusImage.onload = localHandlerFor(uranusTexture, uranusImage);
+  uranusImage.src = "uranus.jpg";
+
+  var neptuneImage = new Image();
+  neptuneImage.onload = localHandlerFor(neptuneTexture, neptuneImage);
+  neptuneImage.src = "neptune.jpg";
+
+  var sunImage = new Image();
+  sunImage.onload = localHandlerFor(sunTexture, sunImage);
+  sunImage.src = "sun.jpg";
+
   var earth = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
                 transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
-                //textureSrc: "earth.jpg",
-                //gl: gl
+                textureId: earthTexture,
+              })
+
+  var earth = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                textureId: earthTexture,
+              })
+
+  var earth = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                textureId: earthTexture,
+              })
+
+  var earth = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                textureId: earthTexture,
+              })
+
+  var earth = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                textureId: earthTexture,
+              })
+
+  var earth = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                textureId: earthTexture,
+              })
+
+  var earth = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                textureId: earthTexture,
               })
 
   var moon = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
                 transformations: { tx: 2.0, ty: 2.0, tz: 2.0 },
-                //textureSrc: "minion.jpg",
-                //gl: gl
+                textureId: moonTexture,
               })
 
+  var sun = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { tx: 2.0, ty: 1.0, tz: 2.0 },
+                textureId: earthTexture,
+              })
+
+
+
+
   console.log(earth);
-  shapesToDraw = new Shape({children: [earth, moon]})
+
+  shapesToDraw = new Shape({children: [earth, moon, sun]})
   console.log(shapesToDraw);
 
   
@@ -172,7 +275,7 @@
     gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix3D.getRotationMatrix(currentRotation, 0, 1, 0).getElements()));
 
     // Display the objects.
-    shapesToDraw.draw(new Matrix3D(), instanceMatrix, vertexColor, vertexPosition, texture, textureCoordinate, gl);
+    shapesToDraw.draw(new Matrix3D(), instanceMatrix, vertexColor, vertexPosition, textureCoordinate, gl);
 
     // All done
     gl.flush();
@@ -180,11 +283,10 @@
 
   // Pass all the vertices to WebGL and draw the initial scene.
   shapesToDraw.getReadyForWebGL(gl);
-  //drawScene();
-  var waitForTexture = setInterval(function () {
-    if (textureIsReady) {
-      drawScene();
-      clearInterval(waitForTexture);
+  var drawWhenReady = setInterval(function () {
+    if (readyTexture === 2) {
+        drawScene();
+        clearInterval(drawWhenReady);
     }
   }, 10);
 
