@@ -282,9 +282,6 @@ var Shape = (function () {
       gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
       gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
 
-      // Set the texture variabes.
-      
-
       //Specifiy the texture to map onto the shape.
       gl.bindTexture(gl.TEXTURE_2D, this.textureId);
       gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinateBuffer);

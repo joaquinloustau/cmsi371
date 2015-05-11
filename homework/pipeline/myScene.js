@@ -65,6 +65,7 @@
   saturnTexture = gl.createTexture();
   uranusTexture = gl.createTexture();
   neptuneTexture = gl.createTexture();
+  sunTexture = gl.createTexture();
 
   var readyTexture = 0;
   var localHandlerFor = function (texture, textureImage) {
@@ -82,113 +83,136 @@
 
   var mercuryImage = new Image();
   mercuryImage.onload = localHandlerFor(mercuryTexture, mercuryImage);
-  mercuryImage.src = "mercury.jpg";
+  mercuryImage.src = "mercurymap.jpg";
 
   var venusImage = new Image();
   venusImage.onload = localHandlerFor(venusTexture, venusImage);
-  venusImage.src = "venus.jpg";
+  venusImage.src = "venusmap.jpg";
 
   var earthImage = new Image();
   earthImage.onload = localHandlerFor(earthTexture, earthImage);
-  earthImage.src = "earth.jpg";
+  earthImage.src = "earthmap.jpg";
 
   var moonImage = new Image();
   moonImage.onload = localHandlerFor(moonTexture, moonImage);
-  moonImage.src = "moon.jpg";
+  moonImage.src = "moonmap.jpg";
 
   var marsImage = new Image();
   marsImage.onload = localHandlerFor(marsTexture, marsImage);
-  marsImage.src = "mars.jpg";
+  marsImage.src = "marsmap.jpg";
 
   var jupiterImage = new Image();
   jupiterImage.onload = localHandlerFor(jupiterTexture, jupiterImage);
-  jupiterImage.src = "jupiter.jpg";
+  jupiterImage.src = "jupitermap.jpg";
 
   var saturnImage = new Image();
   saturnImage.onload = localHandlerFor(saturnTexture, saturnImage);
-  saturnImage.src = "saturn.jpg";
+  saturnImage.src = "saturnmap.jpg";
 
   var uranusImage = new Image();
   uranusImage.onload = localHandlerFor(uranusTexture, uranusImage);
-  uranusImage.src = "uranus.jpg";
+  uranusImage.src = "uranusmap.jpg";
 
   var neptuneImage = new Image();
   neptuneImage.onload = localHandlerFor(neptuneTexture, neptuneImage);
-  neptuneImage.src = "neptune.jpg";
+  neptuneImage.src = "neptunemap.jpg";
 
   var sunImage = new Image();
   sunImage.onload = localHandlerFor(sunTexture, sunImage);
-  sunImage.src = "sun.jpg";
+  sunImage.src = "sunmap.jpg";
 
-  var earth = Shape.sphere()
+  var mercury = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
-                textureId: earthTexture,
+                transformations: { tx: -0.5, ty: 0.0, tz: 3.0,
+                                   sx: 0.3, sy: 0.5, sz: 0.3,
+                                 },
+                textureId: mercuryTexture,
+              })
+
+  var venus = Shape.sphere()
+              .configure({
+                mode: gl.TRIANGLES,
+                transformations: { tx: -1.5, ty: 0.0, tz: 2.5,
+                                   sx: 0.3, sy: 0.5, sz: 0.3,
+                                 },
+                textureId: venusTexture,
               })
 
   var earth = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
+                transformations: { tx: -2.5, ty: 0.0, tz: 1.0,
+                                   sx: 0.5, sy: 1.0, sz: 0.5,
+                                 },
                 textureId: earthTexture,
+                children: [
+                  Shape.sphere()
+                    .configure({
+                      mode: gl.TRIANGLES,
+                      transformations: { tx: -0.5, ty: 0.5, tz: 1.0,
+                                         sx: 0.3, sy: 0.4, sz: 0.3
+                                       },
+                      textureId: moonTexture,
+                    })
+                  ]
               })
 
-  var earth = Shape.sphere()
+  var mars = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
-                textureId: earthTexture,
+                transformations: { tx: -3.5, ty: 0.0, tz: 2.0,
+                                   sx: 0.3, sy: 0.7, sz: 0.3,
+                                 },
+                textureId: marsTexture,
               })
 
-  var earth = Shape.sphere()
+  var jupiter = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
-                textureId: earthTexture,
+                transformations: { tx: 1.0, ty: 0.0, tz: 1.0,
+                                   sx: 0.6, sy: 0.8, sz: 0.6,
+                                 },
+                textureId: jupiterTexture,
               })
 
-  var earth = Shape.sphere()
+  var saturn = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
-                textureId: earthTexture,
+                transformations: { tx: 2.0, ty: 0.0, tz: 1.0,
+                                   sx: 0.4, sy: 0.6, sz: 0.4,
+                                 },
+                textureId: saturnTexture,
               })
 
-  var earth = Shape.sphere()
+  var uranus = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
-                textureId: earthTexture,
+                transformations: { tx: 3.0, ty: 0.0, tz: 1.0,
+                                   sx: 0.3, sy: 0.7, sz: 0.3,
+                                 },
+                textureId: uranusTexture,
               })
 
-  var earth = Shape.sphere()
+  var neptune = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { sx: 2.0, sy: 2.0, sz: 2.0 },
-                textureId: earthTexture,
-              })
-
-  var moon = Shape.sphere()
-              .configure({
-                mode: gl.TRIANGLES,
-                transformations: { tx: 2.0, ty: 2.0, tz: 2.0 },
-                textureId: moonTexture,
+                transformations: { tx: 3.5, ty: 0.0, tz: 2.0,
+                                  sx: 0.2, sy: 0.5, sz: 0.2,
+                                 },
+                textureId: neptuneTexture,
               })
 
   var sun = Shape.sphere()
               .configure({
                 mode: gl.TRIANGLES,
-                transformations: { tx: 2.0, ty: 1.0, tz: 2.0 },
-                textureId: earthTexture,
-              })
-
-
-
+                transformations: { sx: 0.9, sy: 1.5, sz: 0.9 },
+                textureId: sunTexture,
+              });
 
   console.log(earth);
 
-  shapesToDraw = new Shape({children: [earth, moon, sun]})
+  shapesToDraw = new Shape({children: [earth, sun, mercury, mars, venus, jupiter, saturn, uranus, neptune]})
   console.log(shapesToDraw);
 
   
@@ -284,7 +308,7 @@
   // Pass all the vertices to WebGL and draw the initial scene.
   shapesToDraw.getReadyForWebGL(gl);
   var drawWhenReady = setInterval(function () {
-    if (readyTexture === 2) {
+    if (readyTexture === 10) {
         drawScene();
         clearInterval(drawWhenReady);
     }
